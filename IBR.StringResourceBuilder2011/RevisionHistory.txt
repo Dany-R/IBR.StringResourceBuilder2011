@@ -1,0 +1,38 @@
+﻿****************************************************************************************************
+*                                                                                                  *
+* Revision history of IBR.StringResourceBuilder2011                                                *
+*                                                                                                  *
+* Projects:                                                                                        *
+* - IBR.StringResourceBuilder2011                                                                  *
+*                                                                                                  *
+* Comments:                                                                                        *
+* - Date    = Build date                                                                           *
+* - Version = <Major>.<Minor>.<Release>.<Build> (#.#.#.#*)                                         *
+* - Changes = Short description of the changes made                                                *
+*                                                                                                  *
+****************************************************************************************************
+
+
+
+1.2 Release 3 ==============================================================================
+Date        Version   Changes
+
+2012-06-27  1.2.3.9   Fixed: After editing the next string literal in same line has been marked.
+
+2012-06-25  1.2.2.8   Fixed: Rescan did not look for nearest string resource (mark in table and mark
+                             next string literal when cursor in same line).
+                      Fixed: Closing and reopening tool window with same editor window active did
+                             not rescan.
+                      Fixed: Handling empty string literals (locations behind did not match).
+
+
+1.2 Release 2 ==============================================================================
+Date        Version   Changes
+
+2012-06-11  1.2.2.7   New: extension.vsixmanifest updated for Visual Studio 2012 (V11.0).
+
+
+1.2 Release 1 ==============================================================================
+Date        Version   Changes
+
+2012-06-09  1.2.1.6   New: First official release.

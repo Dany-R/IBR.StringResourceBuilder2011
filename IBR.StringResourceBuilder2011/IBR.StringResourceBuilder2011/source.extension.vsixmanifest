@@ -1,0 +1,35 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Vsix xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" Version="1.0.0" xmlns="http://schemas.microsoft.com/developer/vsx-schema/2010">
+  <Identifier Id="IBR.StringResourceBuilder2011.Ingenieur-Büro Rühmer.731646bc-3737-4a6e-83ec-6c9a4e505153">
+    <Name>IBR.StringResourceBuilder2011</Name>
+    <Author>Ingenieur-Büro Rühmer</Author>
+    <Version>1.2.3.9</Version>
+    <Description xml:space="preserve">Build string resources from string literals within source code for localization.</Description>
+    <Locale>1033</Locale>
+    <MoreInfoUrl>http://visualstudiogallery.msdn.microsoft.com/74ecfb4f-6245-4942-a5b2-67aaacd49415</MoreInfoUrl>
+    <License>License.rtf</License>
+    <Icon>translator.ico</Icon>
+    <PreviewImage>StringResourceBuilderPreview2.png</PreviewImage>
+    <SupportedProducts>
+      <VisualStudio Version="10.0">
+        <Edition>Ultimate</Edition>
+        <Edition>Premium</Edition>
+        <Edition>Pro</Edition>
+      </VisualStudio>
+      <VisualStudio Version="11.0">
+        <Edition>Ultimate</Edition>
+        <Edition>Premium</Edition>
+        <Edition>Pro</Edition>
+      </VisualStudio>
+    </SupportedProducts>
+    <SupportedFrameworkRuntimeEdition MinVersion="4.0" MaxVersion="4.0" />
+  </Identifier>
+  <References>
+    <Reference Id="Microsoft.VisualStudio.MPF" MinVersion="10.0">
+      <Name>Visual Studio MPF</Name>
+    </Reference>
+  </References>
+  <Content>
+    <VsPackage>|%CurrentProject%;PkgdefProjectOutputGroup|</VsPackage>
+  </Content>
+</Vsix>

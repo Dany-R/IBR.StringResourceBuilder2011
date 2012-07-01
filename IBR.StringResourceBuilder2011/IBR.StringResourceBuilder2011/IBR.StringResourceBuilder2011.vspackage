@@ -1,0 +1,129 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root xmlns:dm0="http://schemas.microsoft.com/VisualStudio/2008/DslTools/Core" dslVersion="1.0.0.0" Id="788306c7-3cd5-4cf2-840c-04a723620ba0" xmlns="http://schemas.microsoft.com/dsltools/VSPackageDesigner">
+  <commandTable>
+    <rootHasCommandTable Id="731646bc-3737-4a6e-83ec-6c9a4e505153">
+      <commandTable Id="3782ba3b-8b30-466a-8dcb-51bb6b70e6e1" packageGuid="788306c7-3cd5-4cf2-840c-04a723620ba0" commandSetGuid="731646bc-3737-4a6e-83ec-6c9a4e505153" safeProjectName="IBR.StringResourceBuilder2011" counter="1" imagesGuid="3782ba3b-8b30-466a-8dcb-51bb6b70e6e1">
+        <groups>
+          <externalGroup Id="3d17c7d9-2b10-4cb2-8b3f-eecd952d8f76" name="Tools Menu [Command Line]" idNumeric="4" parentData="guidSHLMainMenu,IDG_VS_TOOLS_CMDLINE,Group">
+            <buttons>
+              <groupBaseReferencesButtons Id="af8b9796-1808-4f94-bd75-cfefd202bbf7">
+                <buttonMoniker Id="161d586b-8ce7-4d49-97a6-d35580190eac" />
+              </groupBaseReferencesButtons>
+            </buttons>
+          </externalGroup>
+          <group Id="d2ed9758-1198-4117-8cd6-de4e424902aa" name="RefreshGroup" idNumeric="9">
+            <buttons>
+              <groupBaseReferencesButtons Id="64caac3a-fe5f-4406-a472-707b9b7ba691">
+                <buttonMoniker Id="f000f0db-54f7-4822-8ecd-1ed258a94c79" />
+              </groupBaseReferencesButtons>
+            </buttons>
+          </group>
+          <group Id="1683a892-08ce-40cf-bc8c-fc95a192d3b7" name="NavigationGroup" idNumeric="11" priority="257">
+            <buttons>
+              <groupBaseReferencesButtons Id="b568f2da-40e5-4bbe-8ac0-ca1ba4a8e6fb">
+                <buttonMoniker Id="1a602df5-cb5b-4e17-a39e-7d5d08cf1695" />
+              </groupBaseReferencesButtons>
+              <groupBaseReferencesButtons Id="bbf44c3f-4322-41ab-a14f-5a07182dfa63">
+                <buttonMoniker Id="2f338659-cd44-47e8-8aa0-39656e2daa08" />
+              </groupBaseReferencesButtons>
+              <groupBaseReferencesButtons Id="f405e742-82eb-4d90-980a-2c2aabee3442">
+                <buttonMoniker Id="49fb553d-a2ea-43e0-8b4d-32d2ab076f1f" />
+              </groupBaseReferencesButtons>
+              <groupBaseReferencesButtons Id="e339ee66-6ced-4f1b-9d0e-1d009451840a">
+                <buttonMoniker Id="f0e062eb-40b2-4cda-b34b-beaf58c3b493" />
+              </groupBaseReferencesButtons>
+            </buttons>
+          </group>
+          <group Id="b481d9a7-720c-4e0d-973d-f55d90220a8a" name="MakeGroup" idNumeric="17" priority="258">
+            <buttons>
+              <groupBaseReferencesButtons Id="4c65cb8f-f5a0-4ea0-9d9b-1fae650ded8f">
+                <buttonMoniker Id="efdbccfe-2b0b-430b-b85d-25cefcf52b94" />
+              </groupBaseReferencesButtons>
+            </buttons>
+          </group>
+          <group Id="a06cdea9-4e57-4599-9451-275e04286a17" name="SettingsGroup" idNumeric="19" priority="259">
+            <buttons>
+              <groupBaseReferencesButtons Id="480cbc5b-ea94-4975-958c-458078cafcc3">
+                <buttonMoniker Id="d87dd18e-3188-4fb6-98ce-ccf95f84d3a9" />
+              </groupBaseReferencesButtons>
+            </buttons>
+          </group>
+        </groups>
+        <buttons>
+          <commandTableHasButtons Id="ae3fbd23-5697-4ceb-ade4-865478a549d5">
+            <button Id="161d586b-8ce7-4d49-97a6-d35580190eac" name="StringResourceBuilder" idNumeric="3" buttonText="String Resource Builder" menuText="String Resource Builder" commandName="cmdidStringResourceBuilder" toolTipText="Build resource from string literals" mod1="0" mod2="0" visibilityConstraints="0" icon="translator.bmp" commandFlags="0">
+              <toolWindows>
+                <buttonReferencesToolWindows Id="a93dbe7f-5295-4319-9002-e9eaeb52e3f3">
+                  <toolWindowMoniker Id="f1e1bbbc-c481-45b8-8317-3c04bb6cd2c0" />
+                </buttonReferencesToolWindows>
+              </toolWindows>
+            </button>
+          </commandTableHasButtons>
+          <commandTableHasButtons Id="1f8045a9-c7b9-49fa-bbcf-50872d640f16">
+            <button Id="f000f0db-54f7-4822-8ecd-1ed258a94c79" name="Rescan" idNumeric="10" buttonText="Rescan" menuText="Rescan" commandName="cmdidRescan" toolTipText="Rescan the current source file" mod1="0" mod2="0" visibilityConstraints="0" icon="refresh.bmp" commandFlags="0" />
+          </commandTableHasButtons>
+          <commandTableHasButtons Id="f8449ea2-7a76-4593-805c-52af13f1cd00">
+            <button Id="1a602df5-cb5b-4e17-a39e-7d5d08cf1695" name="First" idNumeric="12" buttonText="First" menuText="First" commandName="cmdidFirst" toolTipText="Goto first string literal" mod1="0" mod2="0" visibilityConstraints="0" icon="ArrowLeftEnd_light.bmp" commandFlags="0" />
+          </commandTableHasButtons>
+          <commandTableHasButtons Id="beec1acd-36eb-49e9-b53a-cd239373954e">
+            <button Id="49fb553d-a2ea-43e0-8b4d-32d2ab076f1f" name="Previous" idNumeric="13" buttonText="Previous" menuText="Previous" commandName="cmdidPrevious" toolTipText="Goto previous string literal" mod1="0" mod2="0" visibilityConstraints="0" priority="257" icon="ArrowLeft_light.bmp" commandFlags="0" />
+          </commandTableHasButtons>
+          <commandTableHasButtons Id="aed49c8c-6071-4402-ad97-ef8fae80ded9">
+            <button Id="2f338659-cd44-47e8-8aa0-39656e2daa08" name="Next" idNumeric="14" buttonText="Next" menuText="Next" commandName="cmdidNext" toolTipText="Goto next string literal" mod1="0" mod2="0" visibilityConstraints="0" priority="258" icon="ArrowRight_light.bmp" commandFlags="0" />
+          </commandTableHasButtons>
+          <commandTableHasButtons Id="03cd5943-328c-4519-92b5-78becdec6266">
+            <button Id="f0e062eb-40b2-4cda-b34b-beaf58c3b493" name="Last" idNumeric="15" buttonText="Last" menuText="Last" commandName="cmdidLast" toolTipText="Goto last string literal" mod1="0" mod2="0" visibilityConstraints="0" priority="259" icon="ArrowRightEnd_light.bmp" commandFlags="0" />
+          </commandTableHasButtons>
+          <commandTableHasButtons Id="68c76eee-073d-45d8-bb62-9ed2d43e2659">
+            <button Id="efdbccfe-2b0b-430b-b85d-25cefcf52b94" name="Make" idNumeric="16" buttonText="Make" menuText="Make" commandName="cmdidMake" toolTipText="Make resource entry from selected string literal" mod1="0" mod2="0" visibilityConstraints="0" icon="StringResource.bmp" commandFlags="0" />
+          </commandTableHasButtons>
+          <commandTableHasButtons Id="0e8618e5-69a7-44c3-a0f9-cadcab173016">
+            <button Id="d87dd18e-3188-4fb6-98ce-ccf95f84d3a9" name="Settings" idNumeric="18" buttonText="Settings" menuText="Settings" commandName="cmdidSettings" toolTipText="Open the settings window" mod1="0" mod2="0" visibilityConstraints="0" icon="settings.bmp" commandFlags="0" />
+          </commandTableHasButtons>
+        </buttons>
+        <menuBases>
+          <commandTableHasMenuBases Id="1bd49d57-f4fc-4e3c-9d88-ce64f30121dc">
+            <menu Id="1f025881-a7eb-46a1-b094-01afdb110247" name="SRBToolbarMenu" idNumeric="5" type="ToolWindowToolbar" buttonText="SRBToolbarMenu" menuText="SRBToolbarMenu" toolTipText="SRBToolbarMenu" commandName="SRBToolbarMenu" visibilityConstraints="0" commandFlags="0">
+              <groupBases>
+                <menuBaseReferencesGroupBases Id="7fc528d5-b537-4ed7-a6c2-3c0b8d955825">
+                  <groupMoniker Id="d2ed9758-1198-4117-8cd6-de4e424902aa" />
+                </menuBaseReferencesGroupBases>
+                <menuBaseReferencesGroupBases Id="98632759-0c1a-4a33-9e55-1025a1383faa">
+                  <groupMoniker Id="1683a892-08ce-40cf-bc8c-fc95a192d3b7" />
+                </menuBaseReferencesGroupBases>
+                <menuBaseReferencesGroupBases Id="c5978f07-b32a-4e30-837b-4a23488d34d2">
+                  <groupMoniker Id="b481d9a7-720c-4e0d-973d-f55d90220a8a" />
+                </menuBaseReferencesGroupBases>
+                <menuBaseReferencesGroupBases Id="a259b535-a000-4972-a30c-b2d4a5750972">
+                  <groupMoniker Id="a06cdea9-4e57-4599-9451-275e04286a17" />
+                </menuBaseReferencesGroupBases>
+              </groupBases>
+            </menu>
+          </commandTableHasMenuBases>
+        </menuBases>
+        <comments>
+          <commandTableHasComments Id="bf0ec3a4-c9b7-4bca-bfe6-a46ec2494318">
+            <comment Id="3516853d-50f3-41dd-a0e6-f243a2f81334" text="String Resource Builder 2011" />
+          </commandTableHasComments>
+        </comments>
+      </commandTable>
+    </rootHasCommandTable>
+  </commandTable>
+  <userInterface>
+    <rootHasUserInterface Id="fb5aa696-1c2a-4cde-8c75-6592a336bf36">
+      <userInterface Id="020812b1-a869-46a5-9ad7-a76889542569">
+        <toolWindows>
+          <userInterfaceHasToolWindows Id="b01de56b-22a0-46b0-bc7d-fc57709ecdbd">
+            <toolWindow Id="f1e1bbbc-c481-45b8-8317-3c04bb6cd2c0" name="SRB" idNumeric="20" caption="SRB" userCodeGenerated="true" transient="true" multiInstance="false" width="600" visibilityConstraints="0" guid="95647f78-65e5-4a37-874a-3847c4b24865">
+              <menus>
+                <toolWindowReferencesMenus Id="057cd99d-031e-4061-8e9a-5d660456e139">
+                  <menuMoniker Id="1f025881-a7eb-46a1-b094-01afdb110247" />
+                </toolWindowReferencesMenus>
+              </menus>
+            </toolWindow>
+          </userInterfaceHasToolWindows>
+        </toolWindows>
+      </userInterface>
+    </rootHasUserInterface>
+  </userInterface>
+</root>
