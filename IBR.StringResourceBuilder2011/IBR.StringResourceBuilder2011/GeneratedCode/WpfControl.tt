@@ -34,7 +34,6 @@ namespace <#= this.Root.CommandTable.SafeProjectName #>
     {
       MessageBox.Show(string.Format(System.Globalization.CultureInfo.CurrentUICulture, "We are inside {0}.button1_Click()", this.ToString()),
                       "<#= ToolWindowName #>");
-
     }
-  }
-}
+  } //class
+} //namespace

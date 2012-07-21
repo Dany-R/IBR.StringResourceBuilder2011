@@ -17,8 +17,8 @@ namespace IBR.StringResourceBuilder2011
   /// The minimum requirement for a class to be considered a valid package for Visual Studio
   /// is to implement the IVsPackage interface and register itself with the shell.
   /// This package uses the helper classes defined inside the Managed Package Framework (MPF)
-  /// to do it: it derives from the Package class that provides the implementation of the 
-  /// IVsPackage interface and uses the registration attributes defined in the framework to 
+  /// to do it: it derives from the Package class that provides the implementation of the
+  /// IVsPackage interface and uses the registration attributes defined in the framework to
   /// register itself and its components with the shell.
   /// </summary>
   // This attribute tells the PkgDef creation utility (CreatePkgDef.exe) that this class is
@@ -35,9 +35,9 @@ namespace IBR.StringResourceBuilder2011
   {
     /// <summary>
     /// Default constructor of the package.
-    /// Inside this method you can place any initialization code that does not require 
-    /// any Visual Studio service because at this point the package object is created but 
-    /// not sited yet inside Visual Studio environment. The place to do all the other 
+    /// Inside this method you can place any initialization code that does not require
+    /// any Visual Studio service because at this point the package object is created but
+    /// not sited yet inside Visual Studio environment. The place to do all the other
     /// initialization is the Initialize method.
     /// </summary>
     public IBRStringResourceBuilder2011PackageBase()
@@ -46,12 +46,13 @@ namespace IBR.StringResourceBuilder2011
     }
 
     /////////////////////////////////////////////////////////////////////////////
-    // Overriden Package Implementation
+    // Overridden Package Implementation
+
     #region Package Members
 
     /// <summary>
     /// Initialization of the package; this method is called right after the package is sited, so this is the place
-    /// where you can put all the initilaization code that rely on services provided by VisualStudio.
+    /// where you can put all the initialization code that rely on services provided by VisualStudio.
     /// </summary>
     protected override void Initialize()
     {
@@ -69,38 +70,44 @@ namespace IBR.StringResourceBuilder2011
         commandId = new CommandID(GuidList.guidIBRStringResourceBuilder2011CmdSet, (int)PkgCmdIDList.StringResourceBuilder);
         menuItem = new OleMenuCommand(StringResourceBuilderExecuteHandler, StringResourceBuilderChangeHandler, StringResourceBuilderQueryStatusHandler, commandId);
         mcs.AddCommand(menuItem);
+
         // Create the command for button Rescan
         commandId = new CommandID(GuidList.guidIBRStringResourceBuilder2011CmdSet, (int)PkgCmdIDList.Rescan);
         menuItem = new OleMenuCommand(RescanExecuteHandler, RescanChangeHandler, RescanQueryStatusHandler, commandId);
         mcs.AddCommand(menuItem);
+
         // Create the command for button First
         commandId = new CommandID(GuidList.guidIBRStringResourceBuilder2011CmdSet, (int)PkgCmdIDList.First);
         menuItem = new OleMenuCommand(FirstExecuteHandler, FirstChangeHandler, FirstQueryStatusHandler, commandId);
         mcs.AddCommand(menuItem);
+
         // Create the command for button Previous
         commandId = new CommandID(GuidList.guidIBRStringResourceBuilder2011CmdSet, (int)PkgCmdIDList.Previous);
         menuItem = new OleMenuCommand(PreviousExecuteHandler, PreviousChangeHandler, PreviousQueryStatusHandler, commandId);
         mcs.AddCommand(menuItem);
+
         // Create the command for button Next
         commandId = new CommandID(GuidList.guidIBRStringResourceBuilder2011CmdSet, (int)PkgCmdIDList.Next);
         menuItem = new OleMenuCommand(NextExecuteHandler, NextChangeHandler, NextQueryStatusHandler, commandId);
         mcs.AddCommand(menuItem);
+
         // Create the command for button Last
         commandId = new CommandID(GuidList.guidIBRStringResourceBuilder2011CmdSet, (int)PkgCmdIDList.Last);
         menuItem = new OleMenuCommand(LastExecuteHandler, LastChangeHandler, LastQueryStatusHandler, commandId);
         mcs.AddCommand(menuItem);
+
         // Create the command for button Make
         commandId = new CommandID(GuidList.guidIBRStringResourceBuilder2011CmdSet, (int)PkgCmdIDList.Make);
         menuItem = new OleMenuCommand(MakeExecuteHandler, MakeChangeHandler, MakeQueryStatusHandler, commandId);
         mcs.AddCommand(menuItem);
+
         // Create the command for button Settings
         commandId = new CommandID(GuidList.guidIBRStringResourceBuilder2011CmdSet, (int)PkgCmdIDList.Settings);
         menuItem = new OleMenuCommand(SettingsExecuteHandler, SettingsChangeHandler, SettingsQueryStatusHandler, commandId);
         mcs.AddCommand(menuItem);
-
-      }
+      } //if
     }
-  
+
     #endregion
 
     #region Handlers for Button: StringResourceBuilder
@@ -109,11 +116,11 @@ namespace IBR.StringResourceBuilder2011
     {
       ShowToolWindowSRB(sender, e);
     }
-  
+
     protected virtual void StringResourceBuilderChangeHandler(object sender, EventArgs e)
     {
     }
-  
+
     protected virtual void StringResourceBuilderQueryStatusHandler(object sender, EventArgs e)
     {
     }
@@ -126,11 +133,11 @@ namespace IBR.StringResourceBuilder2011
     {
       ShowMessage("Rescan clicked!");
     }
-  
+
     protected virtual void RescanChangeHandler(object sender, EventArgs e)
     {
     }
-  
+
     protected virtual void RescanQueryStatusHandler(object sender, EventArgs e)
     {
     }
@@ -143,11 +150,11 @@ namespace IBR.StringResourceBuilder2011
     {
       ShowMessage("First clicked!");
     }
-  
+
     protected virtual void FirstChangeHandler(object sender, EventArgs e)
     {
     }
-  
+
     protected virtual void FirstQueryStatusHandler(object sender, EventArgs e)
     {
     }
@@ -160,11 +167,11 @@ namespace IBR.StringResourceBuilder2011
     {
       ShowMessage("Previous clicked!");
     }
-  
+
     protected virtual void PreviousChangeHandler(object sender, EventArgs e)
     {
     }
-  
+
     protected virtual void PreviousQueryStatusHandler(object sender, EventArgs e)
     {
     }
@@ -177,11 +184,11 @@ namespace IBR.StringResourceBuilder2011
     {
       ShowMessage("Next clicked!");
     }
-  
+
     protected virtual void NextChangeHandler(object sender, EventArgs e)
     {
     }
-  
+
     protected virtual void NextQueryStatusHandler(object sender, EventArgs e)
     {
     }
@@ -194,11 +201,11 @@ namespace IBR.StringResourceBuilder2011
     {
       ShowMessage("Last clicked!");
     }
-  
+
     protected virtual void LastChangeHandler(object sender, EventArgs e)
     {
     }
-  
+
     protected virtual void LastQueryStatusHandler(object sender, EventArgs e)
     {
     }
@@ -211,11 +218,11 @@ namespace IBR.StringResourceBuilder2011
     {
       ShowMessage("Make clicked!");
     }
-  
+
     protected virtual void MakeChangeHandler(object sender, EventArgs e)
     {
     }
-  
+
     protected virtual void MakeQueryStatusHandler(object sender, EventArgs e)
     {
     }
@@ -228,11 +235,11 @@ namespace IBR.StringResourceBuilder2011
     {
       ShowMessage("Settings clicked!");
     }
-  
+
     protected virtual void SettingsChangeHandler(object sender, EventArgs e)
     {
     }
-  
+
     protected virtual void SettingsQueryStatusHandler(object sender, EventArgs e)
     {
     }
@@ -240,8 +247,8 @@ namespace IBR.StringResourceBuilder2011
     #endregion
 
     /// <summary>
-    /// This function is called when the user clicks the menu item that shows the 
-    /// tool window. See the Initialize method to see how the menu item is associated to 
+    /// This function is called when the user clicks the menu item that shows the
+    /// tool window. See the Initialize method to see how the menu item is associated to
     /// this function using the OleMenuCommandService service and the MenuCommand class.
     /// </summary>
     private void ShowToolWindowSRB(object sender, EventArgs e)
@@ -251,9 +258,8 @@ namespace IBR.StringResourceBuilder2011
       // The last flag is set to true so that if the tool window does not exists it will be created.
       ToolWindowPane window = this.FindToolWindow(typeof(SRBToolWindow), 0, true);
       if ((null == window) || (null == window.Frame))
-      {
         throw new NotSupportedException(String.Format("Can not create Toolwindow: SRB"));
-      }
+
       IVsWindowFrame windowFrame = (IVsWindowFrame)window.Frame;
       Microsoft.VisualStudio.ErrorHandler.ThrowOnFailure(windowFrame.Show());
     }
@@ -282,5 +288,5 @@ namespace IBR.StringResourceBuilder2011
              0,    // false
              out result));
     }
-  }
-}
+  } //class
+} //namespace
