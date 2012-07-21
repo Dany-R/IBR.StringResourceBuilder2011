@@ -14,7 +14,17 @@
 
 
 
-1.2 Release 3 ==============================================================================
+1.2 Release 4 ======================================================================================
+Date        Version   Changes
+
+2012-07-21  1.2.4.11  Improved: Rescan while editing no longer with timer and complete but direct
+                                and selective (only what has been changed)-> partly more responsive.
+
+2012-07-08  1.2.3.10  Reworked: Code generators (VSPackage Builder) cleaned up (spaces no tabs,
+                                result code formatted to my likes).
+
+
+1.2 Release 3 ======================================================================================
 Date        Version   Changes
 
 2012-06-27  1.2.3.9   Fixed: After editing the next string literal in same line has been marked.
@@ -26,13 +36,13 @@ Date        Version   Changes
                       Fixed: Handling empty string literals (locations behind did not match).
 
 
-1.2 Release 2 ==============================================================================
+1.2 Release 2 ======================================================================================
 Date        Version   Changes
 
 2012-06-11  1.2.2.7   New: extension.vsixmanifest updated for Visual Studio 2012 (V11.0).
 
 
-1.2 Release 1 ==============================================================================
+1.2 Release 1 ======================================================================================
 Date        Version   Changes
 
 2012-06-09  1.2.1.6   New: First official release.

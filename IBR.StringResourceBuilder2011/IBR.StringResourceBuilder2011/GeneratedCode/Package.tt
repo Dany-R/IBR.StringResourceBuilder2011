@@ -22,8 +22,8 @@ namespace <#= this.Root.CommandTable.SafeProjectName #>
   /// The minimum requirement for a class to be considered a valid package for Visual Studio
   /// is to implement the IVsPackage interface and register itself with the shell.
   /// This package uses the helper classes defined inside the Managed Package Framework (MPF)
-  /// to do it: it derives from the Package class that provides the implementation of the 
-  /// IVsPackage interface and uses the registration attributes defined in the framework to 
+  /// to do it: it derives from the Package class that provides the implementation of the
+  /// IVsPackage interface and uses the registration attributes defined in the framework to
   /// register itself and its components with the shell.
   /// </summary>
   // This attribute tells the PkgDef creation utility (CreatePkgDef.exe) that this class is
@@ -60,37 +60,43 @@ namespace <#= this.Root.CommandTable.SafeProjectName #>
   [ProvideToolWindowVisibility(typeof(<#= toolWindow.Name #>ToolWindow), "<#= str #>")]
 <#
       }
-    } 
+    }
   }
 #>
   [Guid(GuidList.guid<#= this.Root.CommandTable.SafeProjectName.Replace(".", string.Empty) #>PkgString)]
   public abstract class <#= this.Root.CommandTable.SafeProjectName.Replace(".", string.Empty) #>PackageBase : Package
   {
 <#
-  foreach (var combo in this.Root.CommandTable.Combos)
+  if (this.Root.CommandTable.Combos.Count > 0)
   {
-    if (!combo.SampleData)
-      continue;
+    foreach (var combo in this.Root.CommandTable.Combos)
+    {
+      if (!combo.SampleData)
+        continue;
 #>
     private string[] <#= combo.Name #>Choices = {"One", "Two", "Three"};
     private <#= combo.Type == ComboType.IndexCombo ? "int" : "string" #> current<#= combo.Name #>Choice;
 <#
-    if (combo.Type == ComboType.DynamicCombo)
-    {
+      if (combo.Type == ComboType.DynamicCombo)
+      {
 #>
     private double <#= combo.Name #>ZoomFactor = 1.0;
     private string[] <#= combo.Name #>ZoomLevels = null;
     private NumberFormatInfo <#= combo.Name #>NumberFormatInfo;
     private double[] <#= combo.Name #>NumericZoomLevels = { 4.0, 3.0, 2.0, 1.5, 1.25, 1.0, .75, .66, .50, .33, .25, .10 };
 <#
+      }
     }
+#>
+
+<#
   }
 #>
     /// <summary>
     /// Default constructor of the package.
-    /// Inside this method you can place any initialization code that does not require 
-    /// any Visual Studio service because at this point the package object is created but 
-    /// not sited yet inside Visual Studio environment. The place to do all the other 
+    /// Inside this method you can place any initialization code that does not require
+    /// any Visual Studio service because at this point the package object is created but
+    /// not sited yet inside Visual Studio environment. The place to do all the other
     /// initialization is the Initialize method.
     /// </summary>
     public <#= this.Root.CommandTable.SafeProjectName.Replace(".", string.Empty) #>PackageBase()
@@ -99,47 +105,44 @@ namespace <#= this.Root.CommandTable.SafeProjectName #>
     }
 
     /////////////////////////////////////////////////////////////////////////////
-    // Overriden Package Implementation
+    // Overridden Package Implementation
+
     #region Package Members
 
     /// <summary>
     /// Initialization of the package; this method is called right after the package is sited, so this is the place
-    /// where you can put all the initilaization code that rely on services provided by VisualStudio.
+    /// where you can put all the initialization code that rely on services provided by VisualStudio.
     /// </summary>
     protected override void Initialize()
     {
       Trace.WriteLine (string.Format(CultureInfo.CurrentCulture, "Entering Initialize() of: {0}", this.ToString()));
       base.Initialize();
-
 <#
-  bool didInitializeElements = false;
   if (this.Root.CommandTable.Buttons.Count > 0 || this.Root.CommandTable.Combos.Count > 0)
   {
-    didInitializeElements = true;
 #>
+
       // Add our command handlers for menu (commands must exist in the .vsct file)
       OleMenuCommandService mcs = GetService(typeof(IMenuCommandService)) as OleMenuCommandService;
       if ( null != mcs )
       {
         CommandID commandId;
         OleMenuCommand menuItem;
-
 <#
     foreach (var button in this.Root.CommandTable.Buttons)
     {					
 #>
+
         // Create the command for button <#= button.Name #>
         commandId = new CommandID(GuidList.guid<#= this.Root.CommandTable.SafeProjectName.Replace(".", string.Empty) #>CmdSet, (int)PkgCmdIDList.<#= button.Name #>);
         menuItem = new OleMenuCommand(<#= button.Name+"ExecuteHandler" #>, <#= button.Name+"ChangeHandler" #>, <#= button.Name+"QueryStatusHandler" #>, commandId);
         mcs.AddCommand(menuItem);
 <#
     }
-#>
-
-<#
     foreach (var combo in this.Root.CommandTable.Combos)
     {
 #>
+
         // Create the command for combo <#= combo.Name #>
         commandId = new CommandID(GuidList.guid<#= this.Root.CommandTable.SafeProjectName.Replace(".", string.Empty) #>CmdSet, (int)PkgCmdIDList.<#= combo.Name #>);
         menuItem = new OleMenuCommand(<#= combo.Name+"ExecuteHandler" #>, <#= combo.Name+"ChangeHandler" #>, <#= combo.Name+"QueryStatusHandler" #>, commandId);
@@ -149,24 +152,20 @@ namespace <#= this.Root.CommandTable.SafeProjectName #>
       if (combo.Type != ComboType.MRUCombo)
       {
 #>
+
         // Create the command for combo GetList <#= combo.Name #>
         commandId = new CommandID(GuidList.guid<#= this.Root.CommandTable.SafeProjectName.Replace(".", string.Empty) #>CmdSet, (int)PkgCmdIDList.<#= combo.Name #>GetList);
         menuItem = new OleMenuCommand(<#= combo.Name+"GetListExecuteHandler" #>, <#= combo.Name+"GetListChangeHandler" #>, <#= combo.Name+"GetListQueryStatusHandler" #>, commandId);
         mcs.AddCommand(menuItem);				
 <#    }
     }
-  }
 #>
-      }
+      } //if
 <#
-  if (didInitializeElements)
-  {
+  }
 #>
     }
-<#
-  }
-#>
-  
+
     #endregion
 <#
   if (this.Root.CommandTable.Buttons.Count > 0)
@@ -194,14 +193,14 @@ namespace <#= this.Root.CommandTable.SafeProjectName #>
       ShowMessage("<#= button.Name #> clicked!");
 <#
       }
-    }  
+    }
 #>
     }
-  
+
     protected virtual void <#= button.Name + "ChangeHandler" #>(object sender, EventArgs e)
     {
     }
-  
+
     protected virtual void <#= button.Name + "QueryStatusHandler" #>(object sender, EventArgs e)
     {
     }
@@ -229,7 +228,7 @@ namespace <#= this.Root.CommandTable.SafeProjectName #>
       {
         // We should never get here; EventArgs are required.
         throw (new ArgumentException("EventArgs are required")); // force an exception to be thrown
-      }
+      } //if
 
       OleMenuCmdEventArgs eventArgs = e as OleMenuCmdEventArgs;
 
@@ -247,7 +246,6 @@ namespace <#= this.Root.CommandTable.SafeProjectName #>
           // when vOut is non-NULL, the IDE is requesting the current value for the combo
           Marshal.GetNativeVariantForObject(current<#= combo.Name #>Choice, vOut);
         }
-
         else if (newChoice != null)
         {
           // new value was selected or typed in
@@ -260,8 +258,8 @@ namespace <#= this.Root.CommandTable.SafeProjectName #>
             {
               validInput = true;
               break;
-            }
-          }
+            } //if
+          } //for
 
           if (validInput)
           {
@@ -271,19 +269,19 @@ namespace <#= this.Root.CommandTable.SafeProjectName #>
           else
           {
             throw (new ArgumentException("Parameter must be valid string in list")); // force an exception to be thrown
-          }
+          } //else
         }
         else
         {
           // We should never get here
           throw (new ArgumentException("Both in and out parameters can not be NULL")); // force an exception to be thrown
-        }
+        } //else
       }
       else
       {
         // We should never get here; EventArgs are required.
         throw (new ArgumentException("EventArgs are required")); // force an exception to be thrown
-      }
+      } //else
 <#
       }
       else if(combo.Type == ComboType.MRUCombo && combo.SampleData)
@@ -293,7 +291,7 @@ namespace <#= this.Root.CommandTable.SafeProjectName #>
       {
         // We should never get here; EventArgs are required.
         throw (new ArgumentException("EventArgs are required")); // force an exception to be thrown
-      }
+      } //if
 
       OleMenuCmdEventArgs eventArgs = e as OleMenuCmdEventArgs;
 
@@ -311,7 +309,6 @@ namespace <#= this.Root.CommandTable.SafeProjectName #>
           // when vOut is non-NULL, the IDE is requesting the current value for the combo
           Marshal.GetNativeVariantForObject(this.current<#= combo.Name #>Choice, vOut);
         }
-
         else if (input != null)
         {
           string newChoice = input.ToString();
@@ -326,18 +323,18 @@ namespace <#= this.Root.CommandTable.SafeProjectName #>
           {
             // We should never get here
             throw (new ArgumentException("Empty string is not accepted")); // force an exception to be thrown
-          }
+          } //else
         }
         else
         {
           throw (new ArgumentException("Both in and out parameters should not be specified")); // force an exception to be thrown
-        }
+        } //else
       }
       else
       {
         // We should never get here; EventArgs are required.
         throw (new ArgumentException("EventArgs are required")); // force an exception to be thrown
-      }
+      } //else
 
 <#
       }
@@ -348,7 +345,7 @@ namespace <#= this.Root.CommandTable.SafeProjectName #>
       {
         // We should never get here; EventArgs are required.
         throw (new ArgumentException("EventArgs are required")); // force an exception to be thrown
-      }
+      } //if
 
       OleMenuCmdEventArgs eventArgs = e as OleMenuCmdEventArgs;
 
@@ -372,8 +369,7 @@ namespace <#= this.Root.CommandTable.SafeProjectName #>
           {
             string factorString = <#= combo.Name #>ZoomFactor.ToString("P0", this.<#= combo.Name #>NumberFormatInfo);
             Marshal.GetNativeVariantForObject(factorString, vOut);
-          }
-
+          } //else
         }
         else if (input != null)
         {
@@ -388,17 +384,16 @@ namespace <#= this.Root.CommandTable.SafeProjectName #>
           else
           {
             // There doesn't appear to be any percent-parsing routines in the framework (even though you can create
-            // a localized percentage in a string!).  So, we need to remove any occurence of the localized Percent 
+            // a localized percentage in a string!).  So, we need to remove any occurence of the localized Percent
             // symbol, then parse the value that's left
             try
             {
               float newZoom = Single.Parse(inputString.Replace(NumberFormatInfo.InvariantInfo.PercentSymbol, ""), CultureInfo.CurrentCulture);
 
               newZoom = (float)Math.Round(newZoom);
+
               if (newZoom < 0)
-              {
                 throw (new ArgumentException("Zoom factor must be > 0")); // force an exception to be thrown
-              }
 
               <#= combo.Name #>ZoomFactor = newZoom / (float)100.0;
 
@@ -412,19 +407,19 @@ namespace <#= this.Root.CommandTable.SafeProjectName #>
             {
               // user typed in too large of a number, ignore it
             }
-          }
+          } //else
         }
         else
         {
           // We should never get here
           throw (new ArgumentException("Both in and out parameters should not be specified")); // force an exception to be thrown
-        }
+        } //else
       }
       else
       {
         // We should never get here; EventArgs are required.
         throw (new ArgumentException("EventArgs are required")); // force an exception to be thrown
-      }
+      } //else
 <#
       }
       else if(combo.Type == ComboType.IndexCombo && combo.SampleData)
@@ -434,7 +429,7 @@ namespace <#= this.Root.CommandTable.SafeProjectName #>
       {
         // We should never get here; EventArgs are required.
         throw (new ArgumentException("EventArgs are required")); // force an exception to be thrown
-      }
+      } //if
 
       OleMenuCmdEventArgs eventArgs = e as OleMenuCmdEventArgs;
 
@@ -444,14 +439,13 @@ namespace <#= this.Root.CommandTable.SafeProjectName #>
         IntPtr vOut = eventArgs.OutValue;
 
         if (vOut != IntPtr.Zero && input != null)
-        {
           throw (new ArgumentException("Both in and out parameters should not be specified")); // force an exception to be thrown
-        }
+
         if (vOut != IntPtr.Zero)
         {
           // when vOut is non-NULL, the IDE is requesting the current value for the combo
           Marshal.GetNativeVariantForObject(this.<#= combo.Name#>Choices[this.current<#= combo.Name #>Choice], vOut);
-        }
+        } //if
 
         else if (input != null)
         {
@@ -468,7 +462,7 @@ namespace <#= this.Root.CommandTable.SafeProjectName #>
             {
               string errorMessage = string.Format(CultureInfo.CurrentCulture, "Value should be between 0 and {0}", <#= combo.Name#>Choices.Length);
               throw (new ArgumentOutOfRangeException(errorMessage));
-            }
+            } //else
           }
           catch (FormatException)
           {
@@ -479,8 +473,8 @@ namespace <#= this.Root.CommandTable.SafeProjectName #>
               {
                 newChoice = i;
                 break;
-              }
-            }
+              } //if
+            } //for
           }
           catch (OverflowException)
           {
@@ -496,28 +490,28 @@ namespace <#= this.Root.CommandTable.SafeProjectName #>
           else
           {
             throw (new ArgumentException("Parameter must be either index or valid string in list")); // force an exception to be thrown
-          }
+          } //else
         }
         else
         {
           // We should never get here; EventArgs are required.
           throw (new ArgumentException("EventArgs are required")); // force an exception to be thrown
-        }
+        } //else
       }
       else
       {
         // We should never get here; EventArgs are required.
         throw (new ArgumentException("EventArgs are required")); // force an exception to be thrown
-      }
+      } //else
 <#
       }
 #>
     }
-    
+
     protected virtual void <#= combo.Name + "ChangeHandler" #>(object sender, EventArgs e)
-   {
-   }
-  
+    {
+    }
+
     protected virtual void <#= combo.Name + "QueryStatusHandler" #>(object sender, EventArgs e)
     {
     }
@@ -539,7 +533,7 @@ namespace <#= this.Root.CommandTable.SafeProjectName #>
       {
         // We should never get here; EventArgs are required.
         throw (new ArgumentNullException("EventArgs are required")); // force an exception to be thrown
-      }
+      } //if
 
       OleMenuCmdEventArgs eventArgs = e as OleMenuCmdEventArgs;
 
@@ -559,8 +553,8 @@ namespace <#= this.Root.CommandTable.SafeProjectName #>
         else
         {
           throw (new ArgumentException("Out parameter can not be NULL")); // force an exception to be thrown
-        }
-      }
+        } //else
+      } //if
 <#
       }
       else if(combo.Type == ComboType.DynamicCombo && combo.SampleData)
@@ -570,7 +564,7 @@ namespace <#= this.Root.CommandTable.SafeProjectName #>
       {
         // We should never get here; EventArgs are required.
         throw (new ArgumentNullException("EventArgs are required")); // force an exception to be thrown
-      }
+      } //if
 
       OleMenuCmdEventArgs eventArgs = e as OleMenuCmdEventArgs;
 
@@ -596,29 +590,27 @@ namespace <#= this.Root.CommandTable.SafeProjectName #>
 
             <#= combo.Name #>ZoomLevels = new String[<#= combo.Name #>NumericZoomLevels.Length + 1];
             for (int i = 0; i < <#= combo.Name #>NumericZoomLevels.Length; i++)
-            {
               <#= combo.Name #>ZoomLevels[i] = <#= combo.Name #>NumericZoomLevels[i].ToString("P0", this.<#= combo.Name #>NumberFormatInfo);
-            }
 
             <#= combo.Name #>ZoomLevels[<#= combo.Name #>ZoomLevels.Length - 1] = "Zoom to Fit";
-          }
+          } //if
 
           Marshal.GetNativeVariantForObject(<#= combo.Name #>ZoomLevels, vOut);
         }
         else
         {
           throw (new ArgumentException("Out parameter can not be NULL")); // force an exception to be thrown
-        }
-      }
+        } //else
+      } //if
 <#
       }
 #>
     }
-    
+
     protected virtual void <#= combo.Name + "GetListChangeHandler" #>(object sender, EventArgs e)
     {
     }
-  
+
     protected virtual void <#= combo.Name + "GetListQueryStatusHandler" #>(object sender, EventArgs e)
     {
     }
@@ -627,15 +619,14 @@ namespace <#= this.Root.CommandTable.SafeProjectName #>
 <#
     }
   }
-#>
 
-<#
   foreach (var toolWindow in this.Root.UserInterface.ToolWindows)
   {
 #>
+
     /// <summary>
-    /// This function is called when the user clicks the menu item that shows the 
-    /// tool window. See the Initialize method to see how the menu item is associated to 
+    /// This function is called when the user clicks the menu item that shows the
+    /// tool window. See the Initialize method to see how the menu item is associated to
     /// this function using the OleMenuCommandService service and the MenuCommand class.
     /// </summary>
     private void ShowToolWindow<#= toolWindow.Name #>(object sender, EventArgs e)
@@ -645,16 +636,15 @@ namespace <#= this.Root.CommandTable.SafeProjectName #>
       // The last flag is set to true so that if the tool window does not exists it will be created.
       ToolWindowPane window = this.FindToolWindow(typeof(<#= toolWindow.Name #>ToolWindow), 0, true);
       if ((null == window) || (null == window.Frame))
-      {
         throw new NotSupportedException(String.Format("Can not create Toolwindow: <#= toolWindow.Name #>"));
-      }
+
       IVsWindowFrame windowFrame = (IVsWindowFrame)window.Frame;
       Microsoft.VisualStudio.ErrorHandler.ThrowOnFailure(windowFrame.Show());
     }
-
 <#
   }
 #>
+
     /// <summary>
     /// This function is the callback used to execute a command when the a menu item is clicked.
     /// See the Initialize method to see how the menu item is associated to this function using
@@ -679,8 +669,8 @@ namespace <#= this.Root.CommandTable.SafeProjectName #>
              0,    // false
              out result));
     }
-  }
-}
+  } //class
+} //namespace
 <#+
   string GetVisibilityContraintGuidString(string name)
   {
@@ -704,23 +694,23 @@ namespace <#= this.Root.CommandTable.SafeProjectName #>
         return window.Guid.ToString();
 
       if(toolWindow.Window == "Solution Explorer")
-    return "3ae79031-e1bc-11d0-8f78-00a0c9110057";
+        return "3ae79031-e1bc-11d0-8f78-00a0c9110057";
       else if(toolWindow.Window == "Property Browser")
-    return "eefa5220-e298-11d0-8f78-00a0c9110057";
+        return "eefa5220-e298-11d0-8f78-00a0c9110057";
       else if(toolWindow.Window == "Toolbox")
-    return "b1e99781-ab81-11d0-b683-00aa00a3ee26";
+        return "b1e99781-ab81-11d0-b683-00aa00a3ee26";
       else if(toolWindow.Window == "Error List")
-    return "d78612c7-9962-4b83-95d9-268046dad23a";
+        return "d78612c7-9962-4b83-95d9-268046dad23a";
       else if(toolWindow.Window == "Output Window")
-    return "34e76e81-ee4a-11d0-ae2e-00a0c90fffc3";
+        return "34e76e81-ee4a-11d0-ae2e-00a0c90fffc3";
       else if(toolWindow.Window == "Command Window")
-    return "28836128-fc2c-11d2-a433-00c04f72d18a";
+        return "28836128-fc2c-11d2-a433-00c04f72d18a";
       else if(toolWindow.Window == "Server Explorer")
-    return "74946827-37a0-11d2-a273-00c04f8ef4ff";
+        return "74946827-37a0-11d2-a273-00c04f8ef4ff";
       else if(toolWindow.Window == "Team Explorer")
-    return "131369f2-062d-44a2-8671-91ff31efb4f4";
+        return "131369f2-062d-44a2-8671-91ff31efb4f4";
       else if(toolWindow.Window == "")
-    return "";
+        return "";
 
       return null;
     }

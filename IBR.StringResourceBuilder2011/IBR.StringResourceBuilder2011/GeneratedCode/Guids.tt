@@ -14,5 +14,5 @@ namespace <#= this.Root.CommandTable.SafeProjectName #>
     public const string guidCommandSetString = "<#= this.Root.CommandTable.CommandSetGuid.ToString()#>";
 
     public static readonly Guid guid<#= this.Root.CommandTable.SafeProjectName.Replace(".", string.Empty) #>CmdSet = new Guid(guidCommandSetString);
-  };
-}
+  } //class
+} //namespace

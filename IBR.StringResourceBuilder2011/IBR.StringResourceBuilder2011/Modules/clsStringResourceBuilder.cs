@@ -49,6 +49,7 @@ namespace IBR.StringResourceBuilder2011.Modules
     private Settings m_Settings;
 
     private TextDocument m_TextDocument;
+    private int m_LastDocumentLength;
     private bool m_IsCSharp;
 
     private bool m_IsTextMoveSuspended;
@@ -83,14 +84,13 @@ namespace IBR.StringResourceBuilder2011.Modules
     public EnvDTE.Window FocusedTextDocumentWindow
     {
       get { return (m_FocusedTextDocumentWindow); }
-      set { m_FocusedTextDocumentWindow = value; }
-    }
+      set
+      {
+        m_FocusedTextDocumentWindow = value;
 
-    private int m_OldCurrentLine;
-    public int OldCurrentLine
-    {
-      get { return (m_OldCurrentLine); }
-      set { m_OldCurrentLine = value; }
+        TextDocument txtDoc = (value == null) ? null : value.Document.Object("TextDocument") as TextDocument;
+        m_LastDocumentLength = (txtDoc == null) ? 0 : txtDoc.EndPoint.Line;
+      }
     }
 
     private bool m_IsBrowsing;
@@ -135,31 +135,28 @@ namespace IBR.StringResourceBuilder2011.Modules
     System.Diagnostics.Stopwatch m_sw;
 #endif
 
-    private void BrowseForStrings(EnvDTE.Window window)
+    private void BrowseForStrings(EnvDTE.Window window,
+                                  TextPoint startPoint,
+                                  TextPoint endPoint)
     {
-      if (m_IsBrowsing)
-        return;
-
       Debug.Print("\n> BrowseForStrings()");
 
-      m_IsBrowsing = true;
-
-      this.ClearGrid();
-
-      m_StringResources.Clear();
-
-      if (!IsSourceCode(window))
+      if (m_IsBrowsing)
       {
-        Debug.Print("> BrowseForStrings() - cancelled");
-        m_IsBrowsing = false;
+        Debug.Print("> BrowseForStrings() - cancelled (already running)");
         return;
       } //if
 
-      m_OldCurrentLine = m_TextDocument.Selection.ActivePoint.Line;
+      m_IsBrowsing = true;
+
+      bool isFullDocument = startPoint.AtStartOfDocument && endPoint.AtEndOfDocument;
+
+      if (isFullDocument)
+        ClearStringResources();
 
       //OutlineCode();
 
-      this.InitProgress((double)m_TextDocument.EndPoint.Line);
+      this.InitProgress((double)(endPoint.Line - startPoint.Line + 1));
 
 #if DEBUG
       m_sw = System.Diagnostics.Stopwatch.StartNew();
@@ -167,17 +164,23 @@ namespace IBR.StringResourceBuilder2011.Modules
 
 #if notyet
       if (!m_Window.Caption.EndsWith(".xaml"))
-        Parser.ParseForStrings(m_Window, m_StringResources, m_Settings, this.SetProgress, ParsingCompleted);
+        Parser.ParseForStrings(m_Window, m_StringResources, m_Settings, this.SetProgress, ParsingCompleted,
+                               startPoint, endPoint, m_LastDocumentLength);
       else
-        XamlParser.ParseForStrings(m_Window, m_StringResources, m_Settings, this.SetProgress, ParsingCompleted);
+        XamlParser.ParseForStrings(m_Window, m_StringResources, m_Settings, this.SetProgress, ParsingCompleted,
+                                   startPoint, endPoint, m_LastDocumentLength);
 #else
-      Parser.ParseForStrings(m_Window, m_StringResources, m_Settings, this.SetProgress, ParsingCompleted);
+      Parser.ParseForStrings(m_Window, m_StringResources, m_Settings, this.SetProgress, ParsingCompleted,
+                             startPoint, endPoint, m_LastDocumentLength);
 #endif
+
+      //store for next operation (moving locations)
+      m_LastDocumentLength = m_TextDocument.EndPoint.Line;
 
       Debug.Print("> BrowseForStrings() - ended\n");
     }
 
-    private void ParsingCompleted()
+    private void ParsingCompleted(bool isChanged)
     {
 #if DEBUG
       m_sw.Stop(); System.Diagnostics.Debug.Print("{0} elapsed in {1} ms", m_StringResources.Count, m_sw.Elapsed.TotalMilliseconds);
@@ -186,8 +189,9 @@ namespace IBR.StringResourceBuilder2011.Modules
       this.HideProgress();
 
       this.SetGridItemsSource(m_StringResources);
+      this.RefreshGrid();
 
-      if (m_StringResources.Count > 0)
+      if (isChanged && (m_StringResources.Count > 0))
       {
         if (m_IsTextMoveSuspended)
         {
@@ -797,7 +801,7 @@ namespace IBR.StringResourceBuilder2011.Modules
 //             continue;
 // 
 //           //loc.Y += deltaLength;
-//           m_StringResources[rowIndex].Offset(deltaLine, deltaLength);
+//           m_StringResources[rowIndex].Offset(lineDelta, deltaLength);
 //         } //for
 
         if ((deltaLength != 0) || (deltaLine != 0))
@@ -952,12 +956,31 @@ namespace IBR.StringResourceBuilder2011.Modules
 
     #region Public methods
 
-    public void DoBrowse(bool isLineChanged)
+    public void DoBrowse()
     {
-      if (isLineChanged)
-        SuspendTextMove();
+      if (!IsSourceCode(m_FocusedTextDocumentWindow))
+      {
+        ClearStringResources();
+        ClearGrid();
+      }
+      else
+        BrowseForStrings(m_FocusedTextDocumentWindow, m_TextDocument.StartPoint, m_TextDocument.EndPoint);
 
-      BrowseForStrings(m_FocusedTextDocumentWindow);
+      ResumeTextMove();
+    }
+
+    public void DoBrowse(TextPoint startPoint,
+                         TextPoint endPoint)
+    {
+      SuspendTextMove();
+
+      if (!IsSourceCode(m_FocusedTextDocumentWindow))
+      {
+        ClearStringResources();
+        ClearGrid();
+      }
+      else
+        BrowseForStrings(m_FocusedTextDocumentWindow, startPoint, endPoint);
 
       ResumeTextMove();
     }

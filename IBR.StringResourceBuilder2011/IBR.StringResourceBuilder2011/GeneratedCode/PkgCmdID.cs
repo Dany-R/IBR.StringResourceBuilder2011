@@ -13,6 +13,5 @@ namespace IBR.StringResourceBuilder2011
     public const uint Make = 0x0010;
     public const uint Settings = 0x0012;
     public const uint SRBToolbarMenu = 0x0005;
-    
-  };
-}
+  } //class
+} //namespace

@@ -1,5 +1,4 @@
-﻿//#define USE_THREAD
-//#define IGNORE_METHOD_ARGUMENTS
+﻿//#define IGNORE_METHOD_ARGUMENTS
 
 using System;
 using System.Collections.Generic;
@@ -19,7 +18,7 @@ namespace IBR.StringResourceBuilder2011.Modules
                    List<StringResource> stringResources,
                    Settings             settings,
                    Action<int>          progressCallback,
-                   Action               completedCallback)
+                   Action<bool>         completedCallback)
     {
       m_Window          = window;
       m_StringResources = stringResources;
@@ -27,40 +26,11 @@ namespace IBR.StringResourceBuilder2011.Modules
       m_DoProgress      = progressCallback;
       m_DoCompleted     = completedCallback;
       m_IsCSharp        = window.Caption.EndsWith(".cs");
-
-#if USE_THREAD
-      m_Worker.WorkerReportsProgress      = true;
-      m_Worker.WorkerSupportsCancellation = false;
-
-      m_Worker.DoWork += m_Worker_DoWork;
-
-      if (progressCallback != null)
-        m_Worker.ProgressChanged += m_Worker_ProgressChanged;
-
-      if (completedCallback != null)
-        m_Worker.RunWorkerCompleted += m_Worker_RunWorkerCompleted;
-#endif
     }
 
     #endregion //Constructor -----------------------------------------------------------------------
 
     #region Types
-
-#if USE_THREAD
-    private struct WorkerArgs
-    {
-      public WorkerArgs(Window window,
-                        Settings settings)
-      {
-        Window   = window;
-        Settings = settings;
-      }
-
-      public Window   Window;
-      public Settings Settings;
-    }
-#endif
-
     #endregion //Types -----------------------------------------------------------------------------
 
     #region Fields
@@ -69,12 +39,8 @@ namespace IBR.StringResourceBuilder2011.Modules
     private List<StringResource> m_StringResources;
     private Settings m_Settings;
     private Action<int> m_DoProgress;
-    private Action m_DoCompleted;
+    private Action<bool> m_DoCompleted;
     private bool m_IsCSharp;
-
-#if USE_THREAD
-    BackgroundWorker m_Worker = new BackgroundWorker();
-#endif
 
     #endregion //Fields ----------------------------------------------------------------------------
 
@@ -86,92 +52,132 @@ namespace IBR.StringResourceBuilder2011.Modules
 
     #region Private methods
 
-    private void ParseForStrings()
+    private void ParseForStrings(TextPoint startPoint,
+                                 TextPoint endPoint,
+                                 int lastDocumentLength)
     {
-#if USE_THREAD
-      //2.47-1.77 seconds
-      WorkerArgs arguments = new WorkerArgs(m_Window, m_Settings);
-      m_Worker.RunWorkerAsync(arguments);
-#else
-      //0.35-0.06 seconds
+      //0.35-0.06 seconds (threaded: 2.47-1.77 seconds)
       List<StringResource> stringResources = new List<StringResource>();
-      m_StringResources.Clear();
 
-      CodeElements elements = m_Window.Document.ProjectItem.FileCodeModel.CodeElements;
+      bool isFullDocument          = startPoint.AtStartOfDocument && endPoint.AtEndOfDocument,
+           isTextWithStringLiteral = true;
+      int startLine                = startPoint.Line,
+          startCol                 = startPoint.LineCharOffset,
+          endLine                  = endPoint.Line,
+          endCol                   = endPoint.LineCharOffset,
+          documentLength           = endPoint.Parent.EndPoint.Line,
+          insertIndex              = 0;
 
-      foreach (CodeElement element in elements)
+      if (isFullDocument)
+        m_StringResources.Clear();
+      else
       {
-        ParseForStrings(element, m_DoProgress, stringResources, m_Settings, m_IsCSharp);
-      } //foreach
+        #region document manipulated
 
-      m_StringResources.AddRange(stringResources);
-      m_DoCompleted();
+        //determine whether the text between startLine and endLine (including) contains double quotes
+        EditPoint editPoint = startPoint.CreateEditPoint() as EditPoint2;
+        if (!startPoint.AtStartOfLine)
+          editPoint.StartOfLine();
+        isTextWithStringLiteral = editPoint.GetLines(startLine, endLine + 1).Contains("\"");
+
+        //move trailing locations behind changed lines if needed and
+        //remove string resources on changed lines
+
+        int lineOffset = documentLength - lastDocumentLength;
+#if DEBUG_OUTPUT
+        System.Diagnostics.Debug.Print("  Line offset is {0}", lineOffset);
 #endif
-    }
 
-#if USE_THREAD
-    private void m_Worker_DoWork(object sender, DoWorkEventArgs e)
-    {
-      BackgroundWorker worker = sender as BackgroundWorker;
-      WorkerArgs arguments = (WorkerArgs)e.Argument;
-
-      List<StringResource> stringResources = new List<StringResource>();
-
-      CodeElements elements = arguments.Window.Document.ProjectItem.FileCodeModel.CodeElements;
-
-      foreach (CodeElement element in elements)
-      {
-        if (worker.CancellationPending)
+        for (int i = m_StringResources.Count - 1; i >= 0; --i)
         {
-          e.Cancel = true;
-          break;
-        } //if
+          StringResource stringResource = m_StringResources[i];
+          int            lineNo         = stringResource.Location.X;
 
-        ParseForStrings(element, worker, stringResources, arguments.Settings, m_IsCSharp);
-      } //foreach
-
-      e.Result = stringResources;
-    }
-
-    private void m_Worker_ProgressChanged(object sender, ProgressChangedEventArgs e)
-    {
-      m_DoProgress(e.ProgressPercentage);
-    }
-
-    private void m_Worker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
-    {
-      m_StringResources.Clear();
-
-      if (!e.Cancelled && (e.Error == null))
-        m_StringResources.AddRange(e.Result as List<StringResource>);
-
-      m_DoCompleted();
-    }
+          if (lineNo + lineOffset > endLine)
+          {
+            if (lineOffset != 0)
+            {
+#if DEBUG_OUTPUT
+              System.Diagnostics.Debug.Print("  Move string literal from line {0} to {1}", lineNo, lineNo + lineOffset);
 #endif
+              stringResource.Offset(lineOffset, 0); //move
+            } //if
+          }
+          else if (lineNo >= startLine)
+          {
+#if DEBUG_OUTPUT
+            System.Diagnostics.Debug.Print("  Remove string literal {0} ({1}): {2}", i, stringResource.Location, stringResource.Text);
+#endif
+            m_StringResources.RemoveAt(i); //remove changed line
+          }
+          else if (insertIndex == 0)
+          {
+#if DEBUG_OUTPUT
+            System.Diagnostics.Debug.Print("  List insert index is {0} / {1}", i + 1, m_StringResources.Count - 1);
+#endif
+            insertIndex = i + 1;
+          } //else if
+        } //for
+
+        #endregion
+      } //else
+
+#if DEBUG_OUTPUT
+      System.Diagnostics.Debug.Print("  Text has{0} string literals.", isTextWithStringLiteral ? string.Empty : " no");
+#endif
+
+      if (isTextWithStringLiteral)
+      {
+        CodeElements elements = m_Window.Document.ProjectItem.FileCodeModel.CodeElements;
+
+        foreach (CodeElement element in elements)
+        {
+          ParseForStrings(element, m_DoProgress, stringResources, m_Settings, m_IsCSharp, startLine, endLine);
+        } //foreach
+
+#if DEBUG_OUTPUT
+        System.Diagnostics.Debug.Print("  Found {0} string literals", stringResources.Count);
+#endif
+
+        if (isFullDocument)
+          m_StringResources.AddRange(stringResources);
+        else if (stringResources.Count > 0)
+          m_StringResources.InsertRange(insertIndex, stringResources);
+      } //if
+
+      m_DoCompleted(isFullDocument || (stringResources.Count > 0));
+    }
 
     private static void ParseForStrings(CodeElement element,
-#if USE_THREAD
-                                        BackgroundWorker worker,
-#else
                                         Action<int> worker,
-#endif
                                         List<StringResource> stringResources,
                                         Settings settings,
-                                        bool isCSharp)
+                                        bool isCSharp,
+                                        int startLine,
+                                        int endLine)
     {
-#if USE_THREAD
-      if (worker.CancellationPending)
-        return;
-#endif
-
       if (element == null)
         return;
 
-#if DEBUG
+      if (element.StartPoint.Line > endLine)
+        return;
+
+      try
+      {
+        if (element.EndPoint.Line < startLine)
+          return;
+      }
+      catch (Exception ex)
+      {
+        //element.EndPoint invalid when deleting or cutting text
+        System.Diagnostics.Debug.Print("### Error: ParseForStrings(): element.EndPoint < startLine? {0} - {1}", ex.GetType().Name, ex.Message);
+      }
+
+#if DEBUG_OUTPUT
       string elementName = string.Empty;
       if (!isCSharp || (element.Kind != vsCMElement.vsCMElementImportStmt))
         try { elementName = element.Name; } catch {}
-      System.Diagnostics.Debug.Print("ParseForStrings({0} '{1}')", element.Kind, elementName);
+      System.Diagnostics.Debug.Print("  > ParseForStrings({0} '{1}')", element.Kind, elementName);
 #endif
 
       EditPoint2 editPoint  = null;
@@ -185,22 +191,22 @@ namespace IBR.StringResourceBuilder2011.Modules
         CodeElements elements = (element as CodeType).Members;
 
         foreach (CodeElement element2 in elements)
-          ParseForStrings(element2, worker, stringResources, settings, isCSharp);
+          ParseForStrings(element2, worker, stringResources, settings, isCSharp, startLine, endLine);
       }
       else if (element.Kind == vsCMElement.vsCMElementNamespace)
       {
         CodeElements elements = (element as CodeNamespace).Members;
 
         foreach (CodeElement element2 in elements)
-          ParseForStrings(element2, worker, stringResources, settings, isCSharp);
+          ParseForStrings(element2, worker, stringResources, settings, isCSharp, startLine, endLine);
       }
       else if (element.Kind == vsCMElement.vsCMElementProperty)
       {
         CodeProperty prop = element as CodeProperty;
         if (prop.Getter != null)
-          ParseForStrings(prop.Getter as CodeElement, worker, stringResources, settings, isCSharp);
+          ParseForStrings(prop.Getter as CodeElement, worker, stringResources, settings, isCSharp, startLine, endLine);
         if (prop.Setter != null)
-          ParseForStrings(prop.Setter as CodeElement, worker, stringResources, settings, isCSharp);
+          ParseForStrings(prop.Setter as CodeElement, worker, stringResources, settings, isCSharp, startLine, endLine);
       }
       else if ((element.Kind == vsCMElement.vsCMElementFunction)
                || (element.Kind == vsCMElement.vsCMElementVariable))
@@ -226,37 +232,32 @@ namespace IBR.StringResourceBuilder2011.Modules
           if ((element.Kind == vsCMElement.vsCMElementVariable) && (startPoint.LineCharOffset > 1))
             editPoint.CharLeft(startPoint.LineCharOffset - 1);
 
-          //#if DEBUG
-          //        if (element.Kind == vsCMElement.vsCMElementFunction)
-          //          System.Diagnostics.Debug.Print("got a function, named: {0} in line {1} to {2}", element.Name, element.StartPoint.Line, element.EndPoint.Line);
-          //        else
-          //          System.Diagnostics.Debug.Print("got a variable, named: {0} in line {1} to {2}", element.Name, element.StartPoint.Line, element.EndPoint.Line);
-          //#endif
+//#if DEBUG
+//        if (element.Kind == vsCMElement.vsCMElementFunction)
+//          System.Diagnostics.Debug.Print("got a function, named: {0} in line {1} to {2}", element.Name, element.StartPoint.Line, element.EndPoint.Line);
+//        else
+//          System.Diagnostics.Debug.Print("got a variable, named: {0} in line {1} to {2}", element.Name, element.StartPoint.Line, element.EndPoint.Line);
+//#endif
           //if (element.Children.Count > 0)
           //  editPoint = element.Children.Item(element.Children.Count).EndPoint.CreateEditPoint() as EditPoint2;
           //else
           //  editPoint = element.StartPoint.CreateEditPoint() as EditPoint2;
-          //#if DEBUG
-          //        if (element.Children.Count > 0) System.Diagnostics.Debug.Print("      line {0} to {1}", editPoint.Line, element.EndPoint.Line);
-          //#endif
+//#if DEBUG
+//        if (element.Children.Count > 0) System.Diagnostics.Debug.Print("      line {0} to {1}", editPoint.Line, element.EndPoint.Line);
+//#endif
 
           #region veeeeeery sloooooow
-          //int endLine = element.EndPoint.Line,
+          //int endPoint = element.EndPoint.Line,
           //    endColumn = element.EndPoint.LineCharOffset,
           //    absoluteEnd = element.EndPoint.AbsoluteCharOffset,
           //    editLine = editPoint.Line,
           //    editColumn = editPoint.LineCharOffset,
           //    absoluteStart = editPoint.AbsoluteCharOffset,
-          //    editLength = (editLine == endLine) ? (absoluteEnd - absoluteStart + 1)
+          //    editLength = (editLine == endPoint) ? (absoluteEnd - absoluteStart + 1)
           //                                       : (editPoint.LineLength - editColumn + 1);
 
-          //while ((editLine < endLine) || ((editLine == endLine) && (editColumn <= endColumn)))
+          //while ((editLine < endPoint) || ((editLine == endPoint) && (editColumn <= endColumn)))
           //{
-#if USE_THREAD
-          //  if (worker.CancellationPending)
-          //    return; 
-#endif
-
           //  string textLine = editPoint.GetText(editLength);
 
           //  //            System.Diagnostics.Debug.Print(">>>{0}<<<", textLine);
@@ -270,7 +271,7 @@ namespace IBR.StringResourceBuilder2011.Modules
           //  editLine = editPoint.Line;
           //  editColumn = editPoint.LineCharOffset;
           //  absoluteStart = editPoint.AbsoluteCharOffset;
-          //  editLength = (editLine == endLine) ? (absoluteEnd - absoluteStart + 1)
+          //  editLength = (editLine == endPoint) ? (absoluteEnd - absoluteStart + 1)
           //                                     : (editPoint.LineLength - editColumn + 1);
           //} //while
           #endregion
@@ -287,38 +288,30 @@ namespace IBR.StringResourceBuilder2011.Modules
 
           foreach (string line in lines)
           {
-#if USE_THREAD
-            if (worker.CancellationPending)
-              return;
-#endif
-
-            //editColumn = line.Length - line.TrimStart(' ', '\t').Length;
+            if ((editLine >= startLine) && (editLine <= endLine))
+            {
+              //editColumn = line.Length - line.TrimStart(' ', '\t').Length;
 
 #if !IGNORE_METHOD_ARGUMENTS
-            if (/*!string.IsNullOrEmpty(line.Trim()) &&*/ line.Contains("\""))
-              ParseForStrings(line, editLine, editColumn, stringResources, settings, isCSharp, ref isComment);
+              if (/*!string.IsNullOrEmpty(line.Trim()) &&*/ line.Contains("\""))
+                ParseForStrings(line, editLine, editColumn, stringResources, settings, isCSharp, ref isComment);
 #else
-            if (/*!string.IsNullOrEmpty(line.Trim()) &&*/ line.Contains("\""))
-              ParseForStrings(line, editLine, editColumn, stringResources, settings, ref isComment, ref isIgnoreMethodArguments);
+              if (/*!string.IsNullOrEmpty(line.Trim()) &&*/ line.Contains("\""))
+                ParseForStrings(line, editLine, editColumn, stringResources, settings, ref isComment, ref isIgnoreMethodArguments);
 #endif
+            } //if
 
             ++editLine;
           } //foreach
         }
         catch (Exception ex)
         {
-          System.Diagnostics.Debug.Print("Error in ParseForStrings: {0}", ex.Message);
+          System.Diagnostics.Debug.Print("### Error: ParseForStrings(): {0} - {1}", ex.GetType().Name, ex.Message);
         }
       } //else if
 
       if (endPoint != null)
-      {
-#if USE_THREAD
-        worker.ReportProgress(endPoint.Line);
-#else
         worker(endPoint.Line);
-#endif
-      } //if
     }
 
     private static void ParseForStrings(string txtLine,
@@ -626,10 +619,13 @@ namespace IBR.StringResourceBuilder2011.Modules
                                        List<StringResource> stringResources,
                                        Settings settings,
                                        Action<int> progressCallback,
-                                       Action completedCallback)
+                                       Action<bool> completedCallback,
+                                       TextPoint startPoint,
+                                       TextPoint endPoint,
+                                       int lastDocumentLength)
     {
       Parser parser = new Parser(window, stringResources, settings, progressCallback, completedCallback);
-      parser.ParseForStrings();
+      parser.ParseForStrings(startPoint, endPoint, lastDocumentLength);
     }
 
     #endregion //Public methods --------------------------------------------------------------------

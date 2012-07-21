@@ -37,9 +37,6 @@ namespace IBR.StringResourceBuilder2011
 
       this.progressBar1.Visibility = Visibility.Hidden;
 
-      m_LineChangedTimer = new System.Timers.Timer(2000);
-      m_LineChangedTimer.Elapsed += m_LineChangedTimer_Elapsed;
-
       m_Dte2 = Microsoft.VisualStudio.Shell.Package.GetGlobalService(typeof(DTE)) as DTE2;
 
       m_StringResourceBuilder = new StringResourceBuilder(m_Dte2);
@@ -67,8 +64,6 @@ namespace IBR.StringResourceBuilder2011
 
     private bool m_IsVisible;
     //private bool m_IsVisibleChanged;
-
-    private System.Timers.Timer m_LineChangedTimer;
 
     private StringResourceBuilder m_StringResourceBuilder;
 
@@ -252,7 +247,7 @@ namespace IBR.StringResourceBuilder2011
         {
           EnvDTE80.Events2 events = (EnvDTE80.Events2)m_Dte2.Events;
 
-          m_TextEditorEvents = events.TextEditorEvents[txtDoc];
+          m_TextEditorEvents              = events.TextEditorEvents[txtDoc];
           m_TextEditorEvents.LineChanged -= m_TextEditorEvents_LineChanged;
           m_TextEditorEvents.LineChanged += m_TextEditorEvents_LineChanged;
 
@@ -262,9 +257,9 @@ namespace IBR.StringResourceBuilder2011
 
           if (m_FocusedTextDocumentWindowHash != window.GetHashCode())
           {
-            m_FocusedTextDocumentWindowHash = window.GetHashCode();
+            m_FocusedTextDocumentWindowHash                   = window.GetHashCode();
             m_StringResourceBuilder.FocusedTextDocumentWindow = window;
-            this.Dispatcher.BeginInvoke(new Action<bool>(m_StringResourceBuilder.DoBrowse), false);
+            this.Dispatcher.BeginInvoke(new Action(m_StringResourceBuilder.DoBrowse));
           } //if
         } //if
       }
@@ -286,29 +281,20 @@ namespace IBR.StringResourceBuilder2011
     {
       vsTextChanged textChangedHint = (vsTextChanged)hint;
 
-      System.Diagnostics.Trace.WriteLine(string.Format("#### m_TextEditorEvents_LineChanged {0} {1} ({2})", startPoint.Line, endPoint.Line, textChangedHint));
+      System.Diagnostics.Trace.WriteLine(string.Format("#### m_TextEditorEvents_LineChanged {0};{1} {2};{3} ({4})",
+                                                       startPoint.Line, startPoint.LineCharOffset,
+                                                       endPoint.Line, endPoint.LineCharOffset,
+                                                       textChangedHint.ToString()));
 
       //if (((textChangedHint & vsTextChanged.vsTextChangedNewline) == 0) &&
       //    ((textChangedHint & vsTextChanged.vsTextChangedMultiLine) == 0) &&
       //    (textChangedHint != 0))
       //  return;
 
-      //m_IsLineChanged = true;
-
-      m_LineChangedTimer.Stop();
-      m_StringResourceBuilder.OldCurrentLine = startPoint.Line;
-
       if (m_IsVisible)
-        m_LineChangedTimer.Start();
+        this.Dispatcher./*Begin*/Invoke(new Action<TextPoint, TextPoint>(m_StringResourceBuilder.DoBrowse), startPoint, endPoint); //[12-07-21 DR]: synchronously due to multiple events for one edit
       else
         m_FocusedTextDocumentWindowHash = 0;
-    }
-
-    private void m_LineChangedTimer_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
-    {
-      m_LineChangedTimer.Stop();
-
-      this.Dispatcher.BeginInvoke(new Action<bool>(m_StringResourceBuilder.DoBrowse), true);
     }
 
     //private void m_TextDocumentKeyPressEvents_AfterKeyPress(string keyPress, EnvDTE.TextSelection selection, bool inStatementCompletion)
@@ -541,7 +527,7 @@ namespace IBR.StringResourceBuilder2011
 
     internal void DoRescan()
     {
-      m_StringResourceBuilder.DoBrowse(false);
+      m_StringResourceBuilder.DoBrowse();
     }
 
     //First

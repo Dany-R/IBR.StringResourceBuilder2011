@@ -17,7 +17,7 @@ namespace <#= this.Root.CommandTable.SafeProjectName #>
       InitializeComponent();
     }
 
-    /// <summary> 
+    /// <summary>
     /// Let this control process the mnemonics.
     /// </summary>
     [UIPermission(SecurityAction.LinkDemand, Window = UIPermissionWindow.AllWindows)]
@@ -25,10 +25,9 @@ namespace <#= this.Root.CommandTable.SafeProjectName #>
     {
       // If we're the top-level form or control, we need to do the mnemonic handling
       if (charCode != ' ' && ProcessMnemonic(charCode))
-      {
-        return true;
-      }
-      return base.ProcessDialogChar(charCode);
+        return (true);
+
+      return (base.ProcessDialogChar(charCode));
     }
 
     /// <summary>
@@ -36,10 +35,7 @@ namespace <#= this.Root.CommandTable.SafeProjectName #>
     /// </summary>
     protected override bool CanEnableIme
     {
-      get
-      {
-        return true;
-      }
+      get { return (true); }
     }
 
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Globalization", "CA1300:SpecifyMessageBoxOptions")]
@@ -49,5 +45,5 @@ namespace <#= this.Root.CommandTable.SafeProjectName #>
                       string.Format(System.Globalization.CultureInfo.CurrentUICulture, "We are inside {0}.button1_Click()", this.ToString()),
                       "<#= ToolWindowName #>");
     }
-  }
-}
+  } //class
+} //namespace

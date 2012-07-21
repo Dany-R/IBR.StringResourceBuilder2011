@@ -14,11 +14,11 @@
         See the comment before each section for more details about how to
         use it. -->
 
-  <!--  The VSCT compiler (the tool that translates this file into the binary 
-        format that VisualStudio will consume) has the ability to run a preprocessor 
-        on the vsct file; this preprocessor is (usually) the C++ preprocessor, so 
-        it is possible to define includes and macros with the same syntax used 
-        in C++ files. Using this ability of the compiler here, we include some files 
+  <!--  The VSCT compiler (the tool that translates this file into the binary
+        format that VisualStudio will consume) has the ability to run a preprocessor
+        on the vsct file; this preprocessor is (usually) the C++ preprocessor, so
+        it is possible to define includes and macros with the same syntax used
+        in C++ files. Using this ability of the compiler here, we include some files
         defining some of the constants that we will use inside the file. -->
 
   <!--This is the file that defines the IDs for all the commands exposed by VisualStudio. -->
@@ -32,10 +32,12 @@
 
   <Extern href="VSDbgCmd.h" />
   <Extern href="VsDebugGuids.h"/>
-
 <#
   if (!String.IsNullOrEmpty(this.Root.CommandTable.IncludeFiles))
   {
+#>
+
+<#
     foreach (var str in this.Root.CommandTable.IncludeFiles.Split('|'))
     {
 #>
@@ -48,7 +50,6 @@
   <!--The Commands section is where we the commands, menus and menu groups are defined.
       This section uses a Guid to identify the package that provides the command defined inside it. -->
   <Commands package="guidPackage">
-  
 <#
 
   if (ShouldWriteGroupsSection())
@@ -88,8 +89,6 @@
         <Icon guid="<#= GetIconGuid(button.Icon) #>" id="<#= GetIconId(button.Icon) #>" />
 <#
       }
-#>
-<#
       if ((int)button.CommandFlags > 0)
       {
         this.PushIndent("    ");
@@ -110,8 +109,6 @@
     </Buttons>
 <#
   }
-#>
-<#
 
   if (ShouldWriteMenusSection())
   {
@@ -140,24 +137,18 @@
         <Strings>
 <#      WriteMenuStringsSection(menu); #>
         </Strings>
-      </Menu> 
-
+      </Menu>
 <#
       }
-#>
-<#
     }
  #>
     </Menus>
 <#
   }
-#>
-
-<#
-
   if (ShouldWriteCombosSection())
   {
 #>
+
     <Combos>
 <#
     foreach (var combo in this.Root.CommandTable.Combos)
@@ -185,12 +176,10 @@
     </Combos>
 <#
   }
-#>
-
-<#
   if (ShouldWriteBitmapsSection())
   {
 #>
+
     <Bitmaps>
 <#
     foreach (var button in this.Root.CommandTable.Buttons)
@@ -207,14 +196,12 @@
 <#
   }
 #>
-
   </Commands>
-
 <#
-
   if (ShouldWriteCommandPlacementsSection())
   {
 #>
+
   <CommandPlacements>
 <#
     foreach (var el in this.Root.CommandTable.Buttons)
@@ -222,14 +209,12 @@
       foreach (var group in el.GroupBases)
       {
 #>
-    <CommandPlacement guid="guid<#= this.Root.CommandTable.SafeProjectName.Replace(".", string.Empty) #>CommandSet" id="<#=  el.Name #>" priority="0x<#= IntToHex(el.Priority) #>"> 
+    <CommandPlacement guid="guid<#= this.Root.CommandTable.SafeProjectName.Replace(".", string.Empty) #>CommandSet" id="<#=  el.Name #>" priority="0x<#= IntToHex(el.Priority) #>">
       <Parent guid="<#=  GetGroupGuid(group) #>" id="<#=  GetGroupId(group) #>" />
-    </CommandPlacement> 
+    </CommandPlacement>
 <#
       }
     }
-#>
-<#
     foreach (var el in this.Root.CommandTable.Combos)
     {
       foreach (var group in el.GroupBases)
@@ -237,12 +222,10 @@
 #>
     <CommandPlacement guid="guid<#= this.Root.CommandTable.SafeProjectName.Replace(".", string.Empty) #>CommandSet" id="<#=  el.Name #>" priority="0x<#= IntToHex(el.Priority) #>">
       <Parent guid="<#=  GetGroupGuid(group) #>" id="<#=  GetGroupId(group) #>" />
-    </CommandPlacement> 
+    </CommandPlacement>
 <#
       }
     }
-#>
-<#
     // add <CommandPlacement> for groups
     foreach (var el in this.Store.ElementDirectory.AllElements.OfType<Group>())
     {
@@ -251,12 +234,10 @@
 #>
     <CommandPlacement guid="<#=  GetGroupGuid(el) #>" id="<#=  el.Name #>" priority="0x<#= IntToHex(el.Priority) #>">
       <Parent guid="<#=  GetMenuGuid(menu) #>" id="<#=  GetMenuId(menu) #>" />
-    </CommandPlacement> 
+    </CommandPlacement>
 <#
       }
     }
-#>
-<#
     // add <CommandPlacement> for menus
     foreach (var el in this.Store.ElementDirectory.AllElements.OfType<Menu>())
     {
@@ -265,21 +246,18 @@
 #>
     <CommandPlacement guid="<#=  GetMenuGuid(el) #>" id="<#=  el.Name #>" priority="0x<#= IntToHex(el.Priority) #>">
       <Parent guid="<#=  GetGroupGuid(group) #>" id="<#=  GetGroupId(group) #>" />
-    </CommandPlacement> 
+    </CommandPlacement>
 <#
       }
     }
 #>
   </CommandPlacements>
 <#
-  }  
-#>
-
-<#
-
+  }
   if (ShouldWriteVisibilityConstraintsSection())
   {
 #>
+
     <VisibilityConstraints>
 <#
     foreach (VisualElement ve in this.Store.ElementDirectory.AllElements.OfType<VisualElement>())
@@ -332,12 +310,10 @@
     </VisibilityConstraints>
 <#	
   }
-#>
-
-<#
   if (ShouldWriteKeybindingsSection())
   {
 #>
+
   <KeyBindings>
 <#
     foreach(var ve in this.Root.Store.ElementDirectory.FindElements<VisualElement>())
@@ -351,14 +327,14 @@
     }
 #>
   </KeyBindings>
-
 <#
   }
 #>
+
   <Symbols>
     <!-- This is the package guid. -->
     <GuidSymbol name="guidPackage" value="{<#= this.Root.CommandTable.PackageGuid #>}" />
-  
+
     <!-- This is the guid used to group the menu commands together -->
     <GuidSymbol name="guid<#= this.Root.CommandTable.SafeProjectName.Replace(".", string.Empty) #>CommandSet" value="{<#= this.Root.CommandTable.CommandSetGuid #>}">
 <#
@@ -371,16 +347,12 @@
 <#
     }
   }
-#>
-<#
   foreach (var bt in this.Root.CommandTable.Buttons)
   {
 #>
       <IDSymbol name="<#=  bt.Name #>" value="0x<#= IntToHex(bt.IdNumeric) #>" />
 <#
   }
-#>
-<#
   foreach (var el in this.Root.CommandTable.MenuBases)
   {
     if (el is Menu)
@@ -390,8 +362,6 @@
 <#
     }
   }
-#>
-<#
   foreach (var cb in this.Root.CommandTable.Combos)
   {
 #>
@@ -407,6 +377,7 @@
     if (!String.IsNullOrEmpty(bt.Icon) && bt.Icon != "(none)" && IsCustomIcon(bt.Icon))
     {
 #>
+
     <GuidSymbol name="<#= bt.Icon #>Guid" value="{<#= Guid.NewGuid().ToString() #>}">
       <IDSymbol name="<#= bt.Icon #>Id" value="1" />
     </GuidSymbol>
@@ -415,9 +386,7 @@
   }
 #>
   </Symbols>
-
 </CommandTable>
-
 <#+
   string IntToHex(int id)
   {
@@ -440,7 +409,7 @@
       return "guid"+this.Root.CommandTable.SafeProjectName.Replace(".", string.Empty)+"CommandSet";
     }
   }
-  
+
   string GetMenuId(MenuBase menu)
   {
     ExternalMenu externalMenu = menu as ExternalMenu;
