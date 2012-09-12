@@ -14,6 +14,13 @@
 
 
 
+1.3 Release 1 ======================================================================================
+Date        Version   Changes
+
+2012-09-12  1.3.1.12  New: Option to store all string resources in one resource file global to the
+                           project (in Properties directory or project root when not exists).
+
+
 1.2 Release 4 ======================================================================================
 Date        Version   Changes
 

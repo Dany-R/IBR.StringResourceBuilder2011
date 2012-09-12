@@ -54,6 +54,20 @@ namespace IBR.StringResourceBuilder2011
       set { m_IgnoreStringLength = value; }
     }
 
+    private bool m_IsUseGlobalResourceFile;
+    public bool IsUseGlobalResourceFile
+    {
+      get { return (m_IsUseGlobalResourceFile); }
+      set { m_IsUseGlobalResourceFile = value; }
+    }
+
+    private string m_GlobalResourceFileName;
+    public string GlobalResourceFileName
+    {
+      get { return (m_GlobalResourceFileName); }
+      set { m_GlobalResourceFileName = value; }
+    }
+
     private List<string> m_IgnoreStrings = new List<string>();
     public List<string> IgnoreStrings
     {
