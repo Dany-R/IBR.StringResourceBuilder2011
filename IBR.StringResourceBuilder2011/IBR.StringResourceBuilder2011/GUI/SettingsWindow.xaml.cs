@@ -34,6 +34,8 @@ namespace IBR.StringResourceBuilder2011.GUI
       this.cbIgnoreNumberStrings.IsChecked          = m_Settings.IsIgnoreNumberStrings;
       this.cbIgnoreUpToNCharactersStrings.IsChecked = m_Settings.IsIgnoreStringLength;
       this.nudIgnoreStringLength.Value              = (decimal)m_Settings.IgnoreStringLength;
+      this.cbUseGlobalResourceFile.IsChecked        = m_Settings.IsUseGlobalResourceFile;
+      this.txtGlobalResourceFileName.Text           = m_Settings.GlobalResourceFileName;
 
       this.lstIgnoreStrings.Items    = m_Settings.IgnoreStrings;
       this.lstIgnoreSubStrings.Items = m_Settings.IgnoreSubStrings;
@@ -70,6 +72,33 @@ namespace IBR.StringResourceBuilder2011.GUI
 
     private void btnOK_Click(object sender, RoutedEventArgs e)
     {
+      if (this.cbUseGlobalResourceFile.IsChecked ?? false)
+      {
+        if (string.IsNullOrEmpty(this.txtGlobalResourceFileName.Text))
+        {
+          MessageBox.Show("The global resource file name must not be empty.",
+                          "Settings", MessageBoxButton.OK, MessageBoxImage.Error);
+
+          if (!this.tabiOptions.IsSelected)
+            this.tabiOptions.IsSelected = true;
+
+          this.txtGlobalResourceFileName.Focus();
+          return;
+        } //if
+
+        if (this.txtGlobalResourceFileName.Text.IndexOfAny(System.IO.Path.GetInvalidFileNameChars()) >= 0)
+        {
+          MessageBox.Show("The global resource file name contains at least one illegal charter.",
+                          "Settings", MessageBoxButton.OK, MessageBoxImage.Error);
+
+          if (!this.tabiOptions.IsSelected)
+            this.tabiOptions.IsSelected = true;
+
+          this.txtGlobalResourceFileName.Focus();
+          return;
+        } //if 
+      } //if
+
       if (m_Settings == null)
         m_Settings = new Settings();
 
@@ -77,6 +106,8 @@ namespace IBR.StringResourceBuilder2011.GUI
       m_Settings.IsIgnoreNumberStrings     = this.cbIgnoreNumberStrings.IsChecked ?? false;
       m_Settings.IsIgnoreStringLength      = this.cbIgnoreUpToNCharactersStrings.IsChecked ?? false;
       m_Settings.IgnoreStringLength        = (int)this.nudIgnoreStringLength.Value;
+      m_Settings.IsUseGlobalResourceFile   = this.cbUseGlobalResourceFile.IsChecked ?? false;
+      m_Settings.GlobalResourceFileName    = this.txtGlobalResourceFileName.Text;
 
       m_Settings.IgnoreStrings.Clear();
       m_Settings.IgnoreStrings.AddRange(this.lstIgnoreStrings.Items);

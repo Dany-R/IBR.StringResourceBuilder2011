@@ -310,17 +310,33 @@ namespace IBR.StringResourceBuilder2011.Modules
     {
       ProjectItem prjItem = null;
 
-      string resourceFileName = System.IO.Path.ChangeExtension(m_Window.ProjectItem.Name, "Resources.resx");
+      string resourceFileName = null,
+             resourceFileDir  = null;
+
+      if (!m_Settings.IsUseGlobalResourceFile)
+      {
+        resourceFileName = System.IO.Path.ChangeExtension(m_Window.ProjectItem.Name, "Resources.resx"); //file name only
+        resourceFileDir  = System.IO.Path.Combine(System.IO.Path.GetDirectoryName(m_Window.ProjectItem.FileNames[0]),
+                                                  resourceFileName);
+      }
+      else
+      {
+        resourceFileName = "Properties";
+        resourceFileDir  = System.IO.Path.GetDirectoryName(m_Window.ProjectItem.ContainingProject.FullName);
+      } //else
 
       //get the projects project-items collection
       ProjectItems prjItems = m_Window.Project.ProjectItems;
 
-      try
+      if (!m_Settings.IsUseGlobalResourceFile)
       {
-        //try to get the parent project-items collection (if in a sub folder)
-        prjItems = ((ProjectItem)m_Window.ProjectItem.Collection.Parent).ProjectItems;
-      }
-      catch { }
+        try
+        {
+          //try to get the parent project-items collection (if in a sub folder)
+          prjItems = ((ProjectItem)m_Window.ProjectItem.Collection.Parent).ProjectItems;
+        }
+        catch { }
+      } //if
 
       try
       {
@@ -328,13 +344,33 @@ namespace IBR.StringResourceBuilder2011.Modules
       }
       catch { }
 
+      if (m_Settings.IsUseGlobalResourceFile)
+      {
+        bool isPropertiesItem = (prjItem != null);
+
+        if (isPropertiesItem)
+        {
+          prjItems        = prjItem.ProjectItems;
+          prjItem         = null;
+          resourceFileDir = System.IO.Path.Combine(resourceFileDir, resourceFileName); //append "Properties" because it exists
+        } //if
+
+        resourceFileName = System.IO.Path.ChangeExtension(System.IO.Path.GetFileName(m_Settings.GlobalResourceFileName), "Resources.resx");
+
+        try
+        {
+          //searches for the global resource
+          prjItem = prjItems.Item(resourceFileName);
+        }
+        catch { }
+      } //if
+
       if (prjItem == null)
       {
         #region not in project but file exists? -> ask user if delete
-        string projectPath      = System.IO.Path.GetDirectoryName(m_Window.ProjectItem.ContainingProject.FullName),
-               //resourceFilePath = System.IO.Path.GetDirectoryName(m_Window.ProjectItem.FileNames[0]),
-               resourceFile     = System.IO.Path.ChangeExtension(m_Window.ProjectItem.FileNames[0], "Resources.resx"),
-               designerFile     = System.IO.Path.ChangeExtension(resourceFile, ".Designer." + ((m_IsCSharp) ? "cs" : "vb"));
+        string projectPath  = System.IO.Path.GetDirectoryName(m_Window.ProjectItem.ContainingProject.FullName),
+               resourceFile = System.IO.Path.Combine(resourceFileDir, resourceFileName),
+               designerFile = System.IO.Path.ChangeExtension(resourceFile, ".Designer." + ((m_IsCSharp) ? "cs" : "vb"));
 
         if (System.IO.File.Exists(resourceFile) || System.IO.File.Exists(designerFile))
         {
@@ -362,7 +398,7 @@ namespace IBR.StringResourceBuilder2011.Modules
           string itemPath = ((Solution2)m_Dte2.Solution).GetProjectItemTemplate("Resource.zip", language);
 
           //create a new project item based on the template
-          prjItem = prjItems.AddFromTemplate(itemPath, resourceFileName); //returns always null ...
+          /*prjItem =*/ prjItems.AddFromTemplate(itemPath, resourceFileName); //returns always null ...
           prjItem = prjItems.Item(resourceFileName);
         }
         catch (Exception ex)
@@ -644,6 +680,7 @@ namespace IBR.StringResourceBuilder2011.Modules
         m_Settings.IsIgnoreNumberStrings     = true;
         m_Settings.IsIgnoreStringLength      = true;
         m_Settings.IgnoreStringLength        = 2;
+        m_Settings.GlobalResourceFileName    = "SRB_Strings";
       } //else
 
 #if !IGNORE_METHOD_ARGUMENTS
