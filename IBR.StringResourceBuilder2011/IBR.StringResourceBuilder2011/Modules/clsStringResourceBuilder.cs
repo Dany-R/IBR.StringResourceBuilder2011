@@ -46,8 +46,6 @@ namespace IBR.StringResourceBuilder2011.Modules
     private bool m_SettingsPathReadOnly;
     private bool m_SettingsFileReadOnly;
 
-    private Settings m_Settings;
-
     private TextDocument m_TextDocument;
     private int m_LastDocumentLength;
     private bool m_IsCSharp;
@@ -100,13 +98,14 @@ namespace IBR.StringResourceBuilder2011.Modules
       set { m_IsBrowsing = value; }
     }
 
-    private int m_SelectedRowIndex;
-    public int SelectedRowIndex
+    private int m_SelectedGridRowIndex;
+    public int SelectedGridRowIndex
     {
-      get { return (m_SelectedRowIndex); }
-      set { m_SelectedRowIndex = value; }
+      get { return (m_SelectedGridRowIndex); }
+      set { m_SelectedGridRowIndex = value; }
     }
 
+    private Settings m_Settings;
     public Settings Settings
     {
       get { return (m_Settings); }
@@ -195,10 +194,10 @@ namespace IBR.StringResourceBuilder2011.Modules
       {
         if (m_IsTextMoveSuspended)
         {
-          if (m_SelectedRowIndex >= m_StringResources.Count)
-            m_SelectedRowIndex = m_StringResources.Count - 1;
+          if (m_SelectedGridRowIndex >= m_StringResources.Count)
+            m_SelectedGridRowIndex = m_StringResources.Count - 1;
 
-          this.SelectCell(m_SelectedRowIndex, this.GetSelectedColIndex());
+          this.SelectCell(m_SelectedGridRowIndex, this.GetSelectedColIndex());
         }
         else if (m_IsMakePerformed)
         {
@@ -229,7 +228,7 @@ namespace IBR.StringResourceBuilder2011.Modules
       return (stringResource);
     }
 
-    private StringResource GetFirstStringResourceAfterLine(int lineNo)
+    private StringResource GetFirstStringResourceBehindLine(int lineNo)
     {
       StringResource stringResource = m_StringResources.Find(sr => (sr.Location.X > lineNo));
       return (stringResource);
@@ -465,15 +464,14 @@ namespace IBR.StringResourceBuilder2011.Modules
         int replaceLength = m_TextDocument.Selection.Text.Length;
         if (replaceLength > 0)
         {
-          string className = System.IO.Path.GetFileNameWithoutExtension(resxFile).Replace('.', '_');
-          string aliasName = className.Substring(0, className.Length - 6); //..._Resources -> ..._Res
-          //string resourceCall = string.Format("global::{0}.{1}.{2}", nameSpace, className, name);
-          string resourceCall = string.Format("{0}.{1}", aliasName, name);
+          string className    = System.IO.Path.GetFileNameWithoutExtension(resxFile).Replace('.', '_'),
+                 aliasName    = className.Substring(0, className.Length - 6), //..._Resources -> ..._Res
+                 resourceCall = string.Format("{0}.{1}", aliasName, name);
 
           int oldRow = m_TextDocument.Selection.ActivePoint.Line;
 
-          CheckAndAddAlias(nameSpace, className, aliasName);
-          m_TextDocument.Selection.Text = resourceCall;
+          CheckAndAddAlias(nameSpace, className, aliasName);                                             //insert the resource alias (if not yet)
+          m_TextDocument.Selection.Insert(resourceCall, (int)vsInsertFlags.vsInsertFlagsContainNewText); //insert the resource call
 
           UpdateTableAndSelectNext(resourceCall.Length - replaceLength, m_TextDocument.Selection.ActivePoint.Line - oldRow);
         } //if
@@ -654,7 +652,7 @@ namespace IBR.StringResourceBuilder2011.Modules
     }
     #endregion
 
-    #region Ignore strings
+    #region Ignore strings (Settings)
     private void LoadIgnoreStrings()
     {
       string path = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
@@ -673,15 +671,7 @@ namespace IBR.StringResourceBuilder2011.Modules
         m_Settings = Settings.DeSerialize(xml);
       }
       else
-      {
-        //defaults
-        m_Settings = new Settings();
-        m_Settings.IsIgnoreWhiteSpaceStrings = true;
-        m_Settings.IsIgnoreNumberStrings     = true;
-        m_Settings.IsIgnoreStringLength      = true;
-        m_Settings.IgnoreStringLength        = 2;
-        m_Settings.GlobalResourceFileName    = "SRB_Strings";
-      } //else
+        m_Settings = new Settings();  //defaults
 
 #if !IGNORE_METHOD_ARGUMENTS
       if (m_Settings != null)
@@ -713,6 +703,9 @@ namespace IBR.StringResourceBuilder2011.Modules
     #endregion
 
     #region Grid
+    /// <summary>
+    /// Find the nearest string literal to the actual cursor location in the table and select it.
+    /// </summary>
     private void SelectNearestGridRow()
     {
       int curLine = m_TextDocument.Selection.ActivePoint.Line,
@@ -724,6 +717,8 @@ namespace IBR.StringResourceBuilder2011.Modules
 
       if (stringResources.Count > 0)
       {
+        #region current line
+
         if (stringResources[stringResources.Count - 1].Location.Y < curCol)
         {
           //same location line (same or previous string)
@@ -750,27 +745,32 @@ namespace IBR.StringResourceBuilder2011.Modules
             } //if
           } //foreach
         } //else
+
+        #endregion
       }
       else
       {
-        //find nearest line (select only in grid)
-        StringResource stringResource1 = GetLastStringResourceBeforeLine(curLine),
-                       stringResource2 = GetFirstStringResourceAfterLine(curLine);
+        #region find nearest line (select only in grid)
 
-        if ((stringResource1 != null)
-            && ((stringResource2 == null)
-                || ((curLine - stringResource1.Location.X) <= (stringResource2.Location.X - curLine))))
+        StringResource stringResourceBefore = GetLastStringResourceBeforeLine(curLine),
+                       stringResourceBehind = GetFirstStringResourceBehindLine(curLine);
+
+        if ((stringResourceBefore != null)
+            && ((stringResourceBehind == null)
+                || ((curLine - stringResourceBefore.Location.X) <= (stringResourceBehind.Location.X - curLine))))
         {
-          rowNo  = m_StringResources.IndexOf(stringResource1);
-          lineNo = stringResource1.Location.X;
-          Debug.Print("> Found at ({0}, {1}): '{2}'", lineNo, stringResource1.Location.Y, stringResource1.Text);
+          rowNo  = m_StringResources.IndexOf(stringResourceBefore);
+          lineNo = stringResourceBefore.Location.X;
+          Debug.Print("> Found at ({0}, {1}): '{2}'", lineNo, stringResourceBefore.Location.Y, stringResourceBefore.Text);
         }
-        else if (stringResource2 != null)
+        else if (stringResourceBehind != null)
         {
-          rowNo  = m_StringResources.IndexOf(stringResource2);
-          lineNo = stringResource2.Location.X;
-          Debug.Print("> Found at ({0}, {1}): '{2}'", lineNo, stringResource2.Location.Y, stringResource2.Text);
+          rowNo  = m_StringResources.IndexOf(stringResourceBehind);
+          lineNo = stringResourceBehind.Location.X;
+          Debug.Print("> Found at ({0}, {1}): '{2}'", lineNo, stringResourceBehind.Location.Y, stringResourceBehind.Text);
         } //else
+
+        #endregion
       } //else
 
       if (rowNo >= 0)
@@ -782,87 +782,69 @@ namespace IBR.StringResourceBuilder2011.Modules
       } //if
     }
 
+    /// <summary>
+    /// Updates the table and selects next entry.
+    /// </summary>
+    /// <param name="deltaLength">The length delta of the replacement (resource call length minus string literal length).</param>
+    /// <param name="deltaLine">The line delta (when alias has been inserted).</param>
     private void UpdateTableAndSelectNext(int deltaLength,
                                           int deltaLine)
     {
-//       bool isThereAnotherText          = false;
-//       string oldText                   = m_SelectedStringResource.Text;
-      System.Drawing.Point oldLocation = m_SelectedStringResource.Location;
-
-//       //check if there is another occurrence
-//       foreach (StringResource stringResource in m_StringResources)
-//       {
-//         if (stringResource.Location.Equals(oldLocation))
-//           continue;
-// 
-//         isThereAnotherText = (stringResource.Text == oldText);
-//         if (isThereAnotherText)
-//           break;
-//       } //foreach
-
-//       if (isThereAnotherText)
-//       {
-//         #region rebuild table
-//         int oldRowNo = m_SelectedRowIndex,
-//             oldColNo = this.GetSelectedColIndex();
-// 
-//         btnRescan_Click(this.btnRescan, new RoutedEventArgs());
-// 
-//         //if (m_StringResources.Count <= oldRowNo)
-//         //  oldRowNo = m_StringResources.Count - 1;
-//         if (this.dataGrid1.Items.Count <= oldRowNo)
-//           oldRowNo = this.dataGrid1.Items.Count - 1;
-// 
-//         if (oldRowNo >= 0)
-//           this.SelectCell(oldRowNo, oldColNo);
-//         #endregion
-//       }
-//       else
+      if ((deltaLength != 0) || (deltaLine != 0))
       {
-        #region remove entry and goto next
-//         //for (int rowIndex = 0; rowIndex < m_StringResources.Count; ++rowIndex)
-//         for (int rowIndex = 0; rowIndex < this.dataGrid1.Items.Count; ++rowIndex)
-//         {
-//           System.Drawing.Point loc = GetStringLocation(rowIndex);
-// 
-//           if (loc.Equals(oldLocation))
-//             continue;
-// 
-//           if (loc.X > oldLocation.X)
-//             break;
-// 
-//           if (loc.X < oldLocation.X)
-//             continue;
-// 
-//           if (loc.Y < oldLocation.Y)
-//             continue;
-// 
-//           //loc.Y += deltaLength;
-//           m_StringResources[rowIndex].Offset(lineDelta, deltaLength);
-//         } //for
+        #region update entries
 
-        if ((deltaLength != 0) || (deltaLine != 0))
+        int replacedLocationX = m_SelectedStringResource.Location.X,
+            replacedLocationY = m_SelectedStringResource.Location.Y,
+            startGridRowIndex = (deltaLine != 0) ? 0 : m_SelectedGridRowIndex + 1; //touch all when alias has been inserted
+                                                                                   //else only the following entries on the same line
+
+        for (int gridRowIndex = startGridRowIndex; gridRowIndex < m_StringResources.Count; ++gridRowIndex)
         {
-          StringResource stringResource = null;
+          if (gridRowIndex == m_SelectedGridRowIndex)
+            continue;
 
-          if (m_SelectedRowIndex < m_StringResources.Count - 1)
-            stringResource = m_StringResources[m_SelectedRowIndex + 1] as StringResource;
-          else if (m_SelectedRowIndex > 0)
-            stringResource = m_StringResources[m_SelectedRowIndex - 1] as StringResource;
+          StringResource stringResource = m_StringResources[gridRowIndex] as StringResource;
 
-          if ((deltaLength != 0) && (stringResource.Location.X == oldLocation.X) && (stringResource.Location.Y > oldLocation.Y))
-            stringResource.Offset(0, deltaLength);
+          if ((deltaLength != 0) && (stringResource.Location.X == replacedLocationX) && (stringResource.Location.Y > replacedLocationY))
+          {
+            //same line as replaced entry -> heed column shift and a possible alias insertion
+            Debug.Print("{0}: col  {1} -> {2}, {3}", gridRowIndex,
+                                                     stringResource.Location.ToString(),
+                                                     stringResource.Location.X + deltaLine,
+                                                     stringResource.Location.Y + deltaLength);
 
-          if (deltaLine != 0)
+            stringResource.Offset(deltaLine, deltaLength);
+          }
+          else if (deltaLine != 0)
+          {
+            //heed alias insertion
+            Debug.Print("{0}: line {1} -> {2}, {3}", gridRowIndex,
+                                                     stringResource.Location.ToString(),
+                                                     stringResource.Location.X + deltaLine,
+                                                     stringResource.Location.Y + deltaLength);
+
             stringResource.Offset(deltaLine, 0);
-        } //if
+          }
+          else
+            break; //nothing left to update
+        } //for
 
-        this.ClearGrid();
-        RemoveStringResource(m_SelectedRowIndex);
-        this.RefreshGrid();
-        this.SelectCell(m_SelectedRowIndex, this.GetSelectedColIndex());
         #endregion
-      } //else
+      } //if
+
+      #region remove entry and goto next entry
+
+      //this.ClearGrid();
+
+      RemoveStringResource(m_SelectedGridRowIndex);
+
+      //this.SetGridItemsSource(m_StringResources);
+      this.RefreshGrid();
+
+      this.SelectCell(m_SelectedGridRowIndex, this.GetSelectedColIndex());
+
+      #endregion
 
       SelectStringInTextDocument();
     }
@@ -998,7 +980,7 @@ namespace IBR.StringResourceBuilder2011.Modules
       if (!IsSourceCode(m_FocusedTextDocumentWindow))
       {
         ClearStringResources();
-        ClearGrid();
+        this.ClearGrid();
       }
       else
         BrowseForStrings(m_FocusedTextDocumentWindow, m_TextDocument.StartPoint, m_TextDocument.EndPoint);
@@ -1014,7 +996,7 @@ namespace IBR.StringResourceBuilder2011.Modules
       if (!IsSourceCode(m_FocusedTextDocumentWindow))
       {
         ClearStringResources();
-        ClearGrid();
+        this.ClearGrid();
       }
       else
         BrowseForStrings(m_FocusedTextDocumentWindow, startPoint, endPoint);
@@ -1074,7 +1056,7 @@ namespace IBR.StringResourceBuilder2011.Modules
       m_TextDocument.Selection.MoveToLineAndOffset(location.X, location.Y + text.Length + 2, true);
 
       m_SelectedStringResource = this.GetSelectedItem();
-      m_SelectedRowIndex       = this.GetSelectedRowIndex();
+      m_SelectedGridRowIndex       = this.GetSelectedRowIndex();
 
       if ((m_Window != null) && (m_Window != m_Dte2.ActiveWindow))
         m_Window.Activate();

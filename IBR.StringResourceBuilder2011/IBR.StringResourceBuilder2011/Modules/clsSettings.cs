@@ -26,42 +26,42 @@ namespace IBR.StringResourceBuilder2011
 
     #region Properties
 
-    private bool m_IsIgnoreWhiteSpaceStrings;
+    private bool m_IsIgnoreWhiteSpaceStrings = true;
     public bool IsIgnoreWhiteSpaceStrings
     {
       get { return (m_IsIgnoreWhiteSpaceStrings); }
       set { m_IsIgnoreWhiteSpaceStrings = value; }
     }
 
-    private bool m_IsIgnoreNumberStrings;
+    private bool m_IsIgnoreNumberStrings = true;
     public bool IsIgnoreNumberStrings
     {
       get { return (m_IsIgnoreNumberStrings); }
       set { m_IsIgnoreNumberStrings = value; }
     }
 
-    private bool m_IsIgnoreStringLength;
+    private bool m_IsIgnoreStringLength = true;
     public bool IsIgnoreStringLength
     {
       get { return (m_IsIgnoreStringLength); }
       set { m_IsIgnoreStringLength = value; }
     }
 
-    private int m_IgnoreStringLength;
+    private int m_IgnoreStringLength = 2;
     public int IgnoreStringLength
     {
       get { return (m_IgnoreStringLength); }
       set { m_IgnoreStringLength = value; }
     }
 
-    private bool m_IsUseGlobalResourceFile;
+    private bool m_IsUseGlobalResourceFile /*= false*/;
     public bool IsUseGlobalResourceFile
     {
       get { return (m_IsUseGlobalResourceFile); }
       set { m_IsUseGlobalResourceFile = value; }
     }
 
-    private string m_GlobalResourceFileName;
+    private string m_GlobalResourceFileName = "SRB_Strings";
     public string GlobalResourceFileName
     {
       get { return (m_GlobalResourceFileName); }

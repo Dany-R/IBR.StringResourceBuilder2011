@@ -14,6 +14,14 @@
 
 
 
+1.3 Release 2 ======================================================================================
+Date        Version   Changes
+
+2012-09-14  1.3.2.13  Fixed: "Making" a string resource left the table of string literals blank
+                             (due to "improvement" in Build 11).
+                      Improved: Sped up inserting resource call when "making" a string resource.
+
+
 1.3 Release 1 ======================================================================================
 Date        Version   Changes
 
