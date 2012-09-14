@@ -72,6 +72,7 @@ namespace IBR.StringResourceBuilder2011
     private int m_FocusedTextDocumentWindowHash;
 
     private bool m_IsSelectedCellChangedProgrammatically;
+    private bool m_IsMakeInProgress;
 
     private double m_Progress;
     private double m_ProgressStep;
@@ -247,7 +248,7 @@ namespace IBR.StringResourceBuilder2011
         {
           EnvDTE80.Events2 events = (EnvDTE80.Events2)m_Dte2.Events;
 
-          m_TextEditorEvents              = events.TextEditorEvents[txtDoc];
+          m_TextEditorEvents = events.TextEditorEvents[txtDoc];
           m_TextEditorEvents.LineChanged -= m_TextEditorEvents_LineChanged;
           m_TextEditorEvents.LineChanged += m_TextEditorEvents_LineChanged;
 
@@ -279,6 +280,9 @@ namespace IBR.StringResourceBuilder2011
 
     private void m_TextEditorEvents_LineChanged(TextPoint startPoint, TextPoint endPoint, int hint)
     {
+      if (m_IsMakeInProgress)
+        return;
+
       vsTextChanged textChangedHint = (vsTextChanged)hint;
 
       System.Diagnostics.Trace.WriteLine(string.Format("#### m_TextEditorEvents_LineChanged {0};{1} {2};{3} ({4})",
@@ -333,7 +337,7 @@ namespace IBR.StringResourceBuilder2011
       if (m_TextEditorEvents != null)
       {
         m_TextEditorEvents.LineChanged -= m_TextEditorEvents_LineChanged;
-        m_TextEditorEvents              = null;
+        m_TextEditorEvents = null;
       } //if
 
       ClearGrid();
@@ -426,7 +430,7 @@ namespace IBR.StringResourceBuilder2011
 
     private void RefreshGrid()
     {
-      this.dataGrid1.Items.Refresh();//this.dataGrid1.ItemsSource = m_StringResources;
+      this.dataGrid1.Items.Refresh();
     }
 
     private void SelectCell(int rowNo,
@@ -454,7 +458,7 @@ namespace IBR.StringResourceBuilder2011
 
       this.dataGrid1.SelectedCells.Add(cellInfo);
 
-      m_StringResourceBuilder.SelectedRowIndex = rowNo;
+      m_StringResourceBuilder.SelectedGridRowIndex = rowNo;
 
       SetEnabled();
 
@@ -621,7 +625,15 @@ namespace IBR.StringResourceBuilder2011
 
     internal void DoMake()
     {
-      m_StringResourceBuilder.BuildAndUseResource();
+      try
+      {
+        m_IsMakeInProgress = true;
+        m_StringResourceBuilder.BuildAndUseResource();
+      }
+      finally
+      {
+        m_IsMakeInProgress = false;
+      }
     }
 
     //Settings
