@@ -74,17 +74,18 @@ namespace IBR.StringResourceBuilder2011.GUI
     {
       if (this.cbUseGlobalResourceFile.IsChecked ?? false)
       {
-        if (string.IsNullOrEmpty(this.txtGlobalResourceFileName.Text))
-        {
-          MessageBox.Show("The global resource file name must not be empty.",
-                          "Settings", MessageBoxButton.OK, MessageBoxImage.Error);
+        //[12-10-03 DR]: empty for standard global resource file
+        //if (string.IsNullOrEmpty(this.txtGlobalResourceFileName.Text))
+        //{
+        //  MessageBox.Show("The global resource file name must not be empty.",
+        //                  "Settings", MessageBoxButton.OK, MessageBoxImage.Error);
 
-          if (!this.tabiOptions.IsSelected)
-            this.tabiOptions.IsSelected = true;
+        //  if (!this.tabiOptions.IsSelected)
+        //    this.tabiOptions.IsSelected = true;
 
-          this.txtGlobalResourceFileName.Focus();
-          return;
-        } //if
+        //  this.txtGlobalResourceFileName.Focus();
+        //  return;
+        //} //if
 
         if (this.txtGlobalResourceFileName.Text.IndexOfAny(System.IO.Path.GetInvalidFileNameChars()) >= 0)
         {
@@ -107,7 +108,7 @@ namespace IBR.StringResourceBuilder2011.GUI
       m_Settings.IsIgnoreStringLength      = this.cbIgnoreUpToNCharactersStrings.IsChecked ?? false;
       m_Settings.IgnoreStringLength        = (int)this.nudIgnoreStringLength.Value;
       m_Settings.IsUseGlobalResourceFile   = this.cbUseGlobalResourceFile.IsChecked ?? false;
-      m_Settings.GlobalResourceFileName    = this.txtGlobalResourceFileName.Text;
+      m_Settings.GlobalResourceFileName    = (this.txtGlobalResourceFileName.Text ?? string.Empty).Trim();
 
       m_Settings.IgnoreStrings.Clear();
       m_Settings.IgnoreStrings.AddRange(this.lstIgnoreStrings.Items);

@@ -247,20 +247,20 @@ namespace IBR.StringResourceBuilder2011.Modules
 //#endif
 
           #region veeeeeery sloooooow
-          //int endPoint = element.EndPoint.Line,
-          //    endColumn = element.EndPoint.LineCharOffset,
-          //    absoluteEnd = element.EndPoint.AbsoluteCharOffset,
-          //    editLine = editPoint.Line,
-          //    editColumn = editPoint.LineCharOffset,
+          //int endPoint      = element.EndPoint.Line,
+          //    endColumn     = element.EndPoint.LineCharOffset,
+          //    absoluteEnd   = element.EndPoint.AbsoluteCharOffset,
+          //    editLine      = editPoint.Line,
+          //    editColumn    = editPoint.LineCharOffset,
           //    absoluteStart = editPoint.AbsoluteCharOffset,
-          //    editLength = (editLine == endPoint) ? (absoluteEnd - absoluteStart + 1)
-          //                                       : (editPoint.LineLength - editColumn + 1);
+          //    editLength    = (editLine == endPoint) ? (absoluteEnd - absoluteStart + 1)
+          //                                           : (editPoint.LineLength - editColumn + 1);
 
           //while ((editLine < endPoint) || ((editLine == endPoint) && (editColumn <= endColumn)))
           //{
           //  string textLine = editPoint.GetText(editLength);
 
-          //  //            System.Diagnostics.Debug.Print(">>>{0}<<<", textLine);
+          //  //System.Diagnostics.Debug.Print(">>>{0}<<<", textLine);
 
           //  if (!string.IsNullOrEmpty(textLine.Trim()))
           //    ParseForStrings(textLine, editLine, editColumn, stringResources, settings);
@@ -268,11 +268,11 @@ namespace IBR.StringResourceBuilder2011.Modules
           //  editPoint.LineDown(1);
           //  editPoint.StartOfLine();
 
-          //  editLine = editPoint.Line;
-          //  editColumn = editPoint.LineCharOffset;
+          //  editLine      = editPoint.Line;
+          //  editColumn    = editPoint.LineCharOffset;
           //  absoluteStart = editPoint.AbsoluteCharOffset;
-          //  editLength = (editLine == endPoint) ? (absoluteEnd - absoluteStart + 1)
-          //                                     : (editPoint.LineLength - editColumn + 1);
+          //  editLength    = (editLine == endPoint) ? (absoluteEnd - absoluteStart + 1)
+          //                                         : (editPoint.LineLength - editColumn + 1);
           //} //while
           #endregion
 
@@ -464,7 +464,7 @@ namespace IBR.StringResourceBuilder2011.Modules
 
       if (txt.Length > 0)
       {
-        #region put in stringResources
+        #region filter and put in stringResources
         if (txt.ToString().EndsWith("\0"))
           txt.Remove(txt.Length - 1, 1);
 
@@ -488,9 +488,10 @@ namespace IBR.StringResourceBuilder2011.Modules
           if (char.IsDigit(name[0]))
             name = "_" + name;
 
-          int count = GetFirstFreeNameIndex(name, stringResources);
-          if (count > 0)
-            name += "_" + count.ToString();
+          //[12-10-03 DR]: Indexing no longer in use
+          //int count = GetFirstFreeNameIndex(name, stringResources);
+          //if (count > 0)
+          //  name += "_" + count.ToString();
 
           if (settings.IgnoreString(draftName))
             continue;
@@ -501,27 +502,25 @@ namespace IBR.StringResourceBuilder2011.Modules
       } //if
     }
 
-    private static int GetFirstFreeNameIndex(string name,
-                                             List<StringResource> stringResources)
-    {
-      System.Text.RegularExpressions.Regex regex = new System.Text.RegularExpressions.Regex("^" + name + @"(_\d+)?$");
+    //[12-10-03 DR]: Indexing no longer in use
+    //private static int GetFirstFreeNameIndex(string name,
+    //                                         List<StringResource> stringResources)
+    //{
+    //  System.Text.RegularExpressions.Regex regex = new System.Text.RegularExpressions.Regex("^" + name + @"(_\d+)?$");
 
-      List<StringResource> names = stringResources.FindAll(delegate(StringResource sr)
-      {
-        return (regex.IsMatch(sr.Name));
-      });
+    //  List<StringResource> names = stringResources.FindAll(sr => regex.IsMatch(sr.Name));
 
-      if ((names.Count == 0) || !names[0].Name.Equals(name))
-        return (0);
+    //  if ((names.Count == 0) || !names[0].Name.Equals(name))
+    //    return (0);
 
-      for (int i = 1; i < names.Count; ++i)
-      {
-        if (!names[i].Name.EndsWith("_" + i.ToString()))
-          return (i);
-      } //for
+    //  for (int i = 1; i < names.Count; ++i)
+    //  {
+    //    if (!names[i].Name.EndsWith("_" + i.ToString()))
+    //      return (i);
+    //  } //for
 
-      return (names.Count);
-    }
+    //  return (names.Count);
+    //}
 
     private static string HandleComment(string txtPart,
                                         ref bool isComment)
