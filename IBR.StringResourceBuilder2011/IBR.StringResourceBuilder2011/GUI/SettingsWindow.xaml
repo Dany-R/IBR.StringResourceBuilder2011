@@ -64,9 +64,7 @@
           </Grid.RowDefinitions>
           <GroupBox Grid.Row="0" Margin="2" Header="Ignore Options">
             <StackPanel Margin="2,8,2,2">
-              <CheckBox Margin="0,0,0,8" Name="cbIgnoreWhiteSpaceStrings" Content="Ignore white space strings" />
-              <CheckBox Margin="0,0,0,8" Name="cbIgnoreNumberStrings">Ignore number strings</CheckBox>
-              <CheckBox Margin="0,-5,0,0" Name="cbIgnoreUpToNCharactersStrings">
+              <CheckBox Margin="0,-5,0,4" Name="cbIgnoreUpToNCharactersStrings">
                 <StackPanel Orientation="Horizontal">
                   <TextBlock VerticalAlignment="Center" Text="Ignore strings with " />
                   <my:NumericUpDown MinValue="2" Value="2" Width="50" x:Name="nudIgnoreStringLength"
@@ -74,16 +72,19 @@
                   <TextBlock VerticalAlignment="Center" Text=" characters or less" />
                 </StackPanel>
               </CheckBox>
+              <CheckBox Margin="0,0,0,8" Name="cbIgnoreWhiteSpaceStrings" Content="Ignore white space strings (entirely blanks and/or tabs)" />
+              <CheckBox Margin="0,0,0,8" Name="cbIgnoreNumberStrings" Content="Ignore number strings (&quot;1234&quot;, &quot;12.34&quot;, &quot;  1234&quot;, &quot;1234  &quot; but not &quot;123  4&quot;, &quot;12,34&quot;)"></CheckBox>
             </StackPanel>
           </GroupBox>
           <GroupBox Grid.Row="1" Margin="2" Header="Other Options">
             <StackPanel Margin="2,8,2,2">
-              <CheckBox Margin="0,-5,0,0" Name="cbUseGlobalResourceFile">
+              <CheckBox Margin="0,-5,0,4" Name="cbUseGlobalResourceFile">
                 <StackPanel Orientation="Horizontal">
                   <TextBlock VerticalAlignment="Center" Text="Use global resource file" />
                   <TextBox MinWidth="20" Margin="4,2,0,2" VerticalAlignment="Center" Name="txtGlobalResourceFileName"
-                           IsEnabled="{Binding ElementName=cbUseGlobalResourceFile, Path=IsChecked}" FontFamily="Consolas" />
-                  <TextBlock VerticalAlignment="Center" Text=".Resources.resx" FontFamily="Consolas" />
+                           IsEnabled="{Binding ElementName=cbUseGlobalResourceFile, Path=IsChecked}" FontFamily="Consolas, Courier New" />
+                  <TextBlock VerticalAlignment="Center" Text=".Resources.resx" FontFamily="Consolas, Courier New" />
+                  <TextBlock VerticalAlignment="Center" Text=" (leave blank for the standard global resource file)" />
                 </StackPanel>
               </CheckBox>
             </StackPanel>

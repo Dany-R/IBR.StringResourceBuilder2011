@@ -1,9 +1,10 @@
 using System;
 using System.Collections.Generic;
-using System.Text;
-using System.Xml.Serialization;
 using System.IO;
+using System.Text;
+using System.Text.RegularExpressions;
 using System.Windows.Forms;
+using System.Xml.Serialization;
 
 
 
@@ -21,6 +22,8 @@ namespace IBR.StringResourceBuilder2011
     #region Fields
 
     private static XmlSerializer ms_SettingsSerializer = new XmlSerializer(typeof(Settings));
+
+    private static Regex ms_RegexNumber = new Regex(@"^\s*\d+\.?\d*\s*$");
 
     #endregion //Fields ------------------------------------------------------------------
 
@@ -153,26 +156,24 @@ namespace IBR.StringResourceBuilder2011
 
     public bool IgnoreString(string text)
     {
-      if (m_IsIgnoreWhiteSpaceStrings && string.IsNullOrEmpty(text.Trim(' ', ' ', '\t')))
-        return (true);
-
-      if (IsIgnoreNumberStrings && string.IsNullOrEmpty(text.Trim().Trim('0', '1', '2', '3', '4', '5', '6', '7', '8', '9')))
-        return (true);
+      //sequence in priority order
 
       if (m_IsIgnoreStringLength && (text.Length <= m_IgnoreStringLength))
+        return (true);
+
+      if (m_IsIgnoreWhiteSpaceStrings && string.IsNullOrEmpty(text.Trim(' ', '\t')))
+        return (true);
+
+      if (IsIgnoreNumberStrings && ms_RegexNumber.IsMatch(text))
         return (true);
 
       if (m_IgnoreStrings.Contains(text))
         return (true);
 
-      return (m_IgnoreSubStrings.Exists(s => text.Contains(s)));
-      //foreach (string subString in m_IgnoreSubStrings)
-      //{
-      //  if (text.Contains(subString))
-      //    return (true);
-      //} //foreach
+      if (m_IgnoreSubStrings.Exists(s => text.Contains(s)))
+        return (true);
 
-      //return (false);
+      return (false);
     }
 
     public bool IgnoreMethod(string name)

@@ -315,8 +315,7 @@ namespace IBR.StringResourceBuilder2011.Modules
       if (!m_Settings.IsUseGlobalResourceFile)
       {
         resourceFileName = System.IO.Path.ChangeExtension(m_Window.ProjectItem.Name, "Resources.resx"); //file name only
-        resourceFileDir  = System.IO.Path.Combine(System.IO.Path.GetDirectoryName(m_Window.ProjectItem.FileNames[0]),
-                                                  resourceFileName);
+        resourceFileDir  = System.IO.Path.GetDirectoryName(m_Window.ProjectItem.FileNames[0]);
       }
       else
       {
@@ -354,7 +353,10 @@ namespace IBR.StringResourceBuilder2011.Modules
           resourceFileDir = System.IO.Path.Combine(resourceFileDir, resourceFileName); //append "Properties" because it exists
         } //if
 
-        resourceFileName = System.IO.Path.ChangeExtension(System.IO.Path.GetFileName(m_Settings.GlobalResourceFileName), "Resources.resx");
+        if (string.IsNullOrEmpty(m_Settings.GlobalResourceFileName))
+          resourceFileName = "Resources.resx"; //standard global resource file
+        else
+          resourceFileName = System.IO.Path.ChangeExtension(System.IO.Path.GetFileName(m_Settings.GlobalResourceFileName), "Resources.resx");
 
         try
         {
@@ -467,6 +469,13 @@ namespace IBR.StringResourceBuilder2011.Modules
           string className    = System.IO.Path.GetFileNameWithoutExtension(resxFile).Replace('.', '_'),
                  aliasName    = className.Substring(0, className.Length - 6), //..._Resources -> ..._Res
                  resourceCall = string.Format("{0}.{1}", aliasName, name);
+
+          if (string.IsNullOrEmpty(m_Settings.GlobalResourceFileName))
+          {
+            //standard global resource file
+            aliasName    = string.Concat("Glbl", aliasName);
+            resourceCall = string.Concat("Glbl", resourceCall);
+          } //if
 
           int oldRow = m_TextDocument.Selection.ActivePoint.Line;
 
@@ -830,6 +839,40 @@ namespace IBR.StringResourceBuilder2011.Modules
             break; //nothing left to update
         } //for
 
+#if never //[12-10-03 DR]: Indexing no longer in use
+        //[12-10-03 DR]: search for resource names with selected name plus index ("_#")
+        string name = string.Concat(m_SelectedStringResource.Name, "_");
+
+        List<StringResource> stringResources = m_StringResources.FindAll(sr => sr.Name.StartsWith(name));
+
+        if (stringResources.Count > 0)
+        {
+          //[12-10-03 DR]: calculate new indexes (remove first index entirely)
+          int nameLength = name.Length,
+              firstIndex = -1,
+              index      = 1,
+              indexValue;
+
+          foreach (StringResource item in stringResources)
+          {
+            if (int.TryParse(item.Name.Substring(nameLength), out indexValue))
+            {
+              if (firstIndex == -1)
+              {
+                firstIndex = indexValue;
+                item.Name = item.Name.Substring(0, nameLength - 1); //remove entire index ("_#")
+              }
+              else
+              {
+                item.Name = item.Name.Substring(0, nameLength);         //remove old index number
+                item.Name = string.Concat(item.Name, index.ToString()); //append new index number
+                ++index;
+              } //else
+            } //if
+          } //foreach
+        } //if
+#endif
+
         #endregion
       } //if
 
@@ -1083,6 +1126,8 @@ namespace IBR.StringResourceBuilder2011.Modules
       //SetEnabled();
 
       //MarkStringInTextDocument();
+
+      m_LastDocumentLength = m_TextDocument.EndPoint.Line;
     }
 
     public void SaveSettings()
