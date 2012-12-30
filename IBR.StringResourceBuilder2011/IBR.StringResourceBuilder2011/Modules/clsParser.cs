@@ -229,8 +229,8 @@ namespace IBR.StringResourceBuilder2011.Modules
 
           editPoint = startPoint.CreateEditPoint() as EditPoint2;
 
-          if ((element.Kind == vsCMElement.vsCMElementVariable) && (startPoint.LineCharOffset > 1))
-            editPoint.CharLeft(startPoint.LineCharOffset - 1);
+          //if ((element.Kind == vsCMElement.vsCMElementVariable) && (startPoint.LineCharOffset > 1))
+          //  editPoint.CharLeft(startPoint.LineCharOffset - 1);
 
 //#if DEBUG
 //        if (element.Kind == vsCMElement.vsCMElementFunction)
@@ -278,7 +278,7 @@ namespace IBR.StringResourceBuilder2011.Modules
 
           //this is much faster (by factors)!!!
           int      editLine   = editPoint.Line,
-                   editColumn = 1;// editPoint.LineCharOffset;
+                   editColumn = editPoint.LineCharOffset;
           string   text       = editPoint.GetText(endPoint);
           string[] lines      = text.Replace("\r", string.Empty).Split('\n');
           bool     isComment  = false;
@@ -290,18 +290,22 @@ namespace IBR.StringResourceBuilder2011.Modules
           {
             if ((editLine >= startLine) && (editLine <= endLine))
             {
-              //editColumn = line.Length - line.TrimStart(' ', '\t').Length;
+              //this is a changed text line in the block
 
 #if !IGNORE_METHOD_ARGUMENTS
-              if (/*!string.IsNullOrEmpty(line.Trim()) &&*/ line.Contains("\""))
+              if (line.Contains("\""))
                 ParseForStrings(line, editLine, editColumn, stringResources, settings, isCSharp, ref isComment);
 #else
-              if (/*!string.IsNullOrEmpty(line.Trim()) &&*/ line.Contains("\""))
+              if (line.Contains("\""))
                 ParseForStrings(line, editLine, editColumn, stringResources, settings, ref isComment, ref isIgnoreMethodArguments);
 #endif
             } //if
 
             ++editLine;
+
+            //only for the first line of the text block LineCharOffset will be used
+            if (editColumn > 1)
+              editColumn = 1;
           } //foreach
         }
         catch (Exception ex)

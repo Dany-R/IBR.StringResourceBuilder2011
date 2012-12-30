@@ -49,6 +49,7 @@ namespace IBR.StringResourceBuilder2011.Modules
     private TextDocument m_TextDocument;
     private int m_LastDocumentLength;
     private bool m_IsCSharp;
+    private string m_ProjectExtension;
 
     private bool m_IsTextMoveSuspended;
     //private bool m_IsLineChanged;
@@ -283,8 +284,9 @@ namespace IBR.StringResourceBuilder2011.Modules
           return (false);
       } //else
 
-      m_IsCSharp     = (m_Window.Document.Language == "CSharp");
-      m_TextDocument = m_Window.Document.Object("TextDocument") as TextDocument;
+      m_IsCSharp         = (m_Window.Document.Language == "CSharp");
+      m_ProjectExtension = System.IO.Path.GetExtension(m_Window.Project.FullName).Substring(1);
+      m_TextDocument     = m_Window.Document.Object("TextDocument") as TextDocument;
       if (m_TextDocument == null)
         return (false);
 
@@ -319,7 +321,7 @@ namespace IBR.StringResourceBuilder2011.Modules
       }
       else
       {
-        resourceFileName = "Properties";
+        resourceFileName = m_ProjectExtension.StartsWith("cs") ? "Properties" : "My Project";
         resourceFileDir  = System.IO.Path.GetDirectoryName(m_Window.ProjectItem.ContainingProject.FullName);
       } //else
 
@@ -350,7 +352,7 @@ namespace IBR.StringResourceBuilder2011.Modules
         {
           prjItems        = prjItem.ProjectItems;
           prjItem         = null;
-          resourceFileDir = System.IO.Path.Combine(resourceFileDir, resourceFileName); //append "Properties" because it exists
+          resourceFileDir = System.IO.Path.Combine(resourceFileDir, resourceFileName); //append "Properties"/"My Project" because it exists
         } //if
 
         if (string.IsNullOrEmpty(m_Settings.GlobalResourceFileName))
@@ -371,7 +373,7 @@ namespace IBR.StringResourceBuilder2011.Modules
         #region not in project but file exists? -> ask user if delete
         string projectPath  = System.IO.Path.GetDirectoryName(m_Window.ProjectItem.ContainingProject.FullName),
                resourceFile = System.IO.Path.Combine(resourceFileDir, resourceFileName),
-               designerFile = System.IO.Path.ChangeExtension(resourceFile, ".Designer." + ((m_IsCSharp) ? "cs" : "vb"));
+               designerFile = System.IO.Path.ChangeExtension(resourceFile, ".Designer." + m_ProjectExtension.Substring(0, 2)/*((m_IsCSharp) ? "cs" : "vb")*/);
 
         if (System.IO.File.Exists(resourceFile) || System.IO.File.Exists(designerFile))
         {
@@ -393,10 +395,8 @@ namespace IBR.StringResourceBuilder2011.Modules
 
         try
         {
-          string language = (m_IsCSharp) ? "csproj" : "vbproj";
-
           // Retrieve the path to the resource template.
-          string itemPath = ((Solution2)m_Dte2.Solution).GetProjectItemTemplate("Resource.zip", language);
+          string itemPath = ((Solution2)m_Dte2.Solution).GetProjectItemTemplate("Resource.zip", m_ProjectExtension);
 
           //create a new project item based on the template
           /*prjItem =*/ prjItems.AddFromTemplate(itemPath, resourceFileName); //returns always null ...
@@ -409,7 +409,10 @@ namespace IBR.StringResourceBuilder2011.Modules
         }
       } //if
 
-      //open the resx file
+      if (prjItem == null)
+        return (null);
+
+      //open the ResX file
       if (!prjItem.IsOpen[Constants.vsViewKindAny])
         prjItem.Open(Constants.vsViewKindDesigner);
 
@@ -441,7 +444,7 @@ namespace IBR.StringResourceBuilder2011.Modules
         } //foreach
         #endregion
 
-        //close the resx file to modify it
+        //close the ResX file to modify it
         prjItem.Document.Close(vsSaveChanges.vsSaveChangesYes);
 
         string name,
@@ -453,7 +456,7 @@ namespace IBR.StringResourceBuilder2011.Modules
         value = stringResource.Text;
 
         if (!m_IsCSharp || (m_TextDocument.Selection.Text.Length > 0) && (m_TextDocument.Selection.Text[0] == '@'))
-          value = value.Replace("\"\"", "\\\"");
+          value = value.Replace("\"\"", "\\\""); // [""] -> [\"] (change VB writing to CSharp)
 
         if (!AppendStringResource(resxFile, name, value, comment))
           return;
@@ -479,7 +482,7 @@ namespace IBR.StringResourceBuilder2011.Modules
 
           int oldRow = m_TextDocument.Selection.ActivePoint.Line;
 
-          CheckAndAddAlias(nameSpace, className, aliasName);                                             //insert the resource alias (if not yet)
+          CheckAndAddAlias(nameSpace, className, aliasName);                                           //insert the resource alias (if not yet)
           m_TextDocument.Selection.Insert(resourceCall, (int)vsInsertFlags.vsInsertFlagsContainNewText); //insert the resource call
 
           UpdateTableAndSelectNext(resourceCall.Length - replaceLength, m_TextDocument.Selection.ActivePoint.Line - oldRow);
