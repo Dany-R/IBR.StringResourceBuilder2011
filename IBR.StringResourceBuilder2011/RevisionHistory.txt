@@ -14,6 +14,14 @@
 
 
 
+1.3 Release 4 ======================================================================================
+Date        Version   Changes
+
+2012-12-30  1.3.4.15  Fixed: Wrong column number parsed in single line function (e.g. get/set).
+                      Fixed: Global resource file for VB did not work (must be found in directory
+                             "My Project" instead of "Properties").
+
+
 1.3 Release 3 ======================================================================================
 Date        Version   Changes
 
