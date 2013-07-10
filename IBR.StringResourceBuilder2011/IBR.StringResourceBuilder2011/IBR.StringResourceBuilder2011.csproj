@@ -139,6 +139,7 @@
     <Resource Include="Images\bt_remove_shadow.png" />
     <Resource Include="Images\Redo.png" />
     <Resource Include="Images\Undo.png" />
+    <None Include="Images\Images_24bit.bmp" />
     <Content Include="License.rtf">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <IncludeInVSIX>true</IncludeInVSIX>
