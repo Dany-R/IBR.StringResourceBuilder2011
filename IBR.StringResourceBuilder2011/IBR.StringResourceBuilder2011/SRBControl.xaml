@@ -31,6 +31,14 @@
       <Setter Property="VerticalGridLinesBrush" Value="#FFF0F0F0"/>
       <!--<Setter Property="IsSynchronizedWithCurrentItem" Value="True"/>-->
     </Style>
+    <!-- make selection background blue even when DataGrid is unfocused (VS2012) -->
+    <Style x:Key="CellStyle" TargetType="{x:Type DataGridCell}">
+      <Style.Triggers>
+        <Trigger Property="IsSelected" Value="True">
+          <Setter Property="Background" Value="#FF3399FF" />
+        </Trigger>
+      </Style.Triggers>
+    </Style>
     <!--StatusBar-->
     <Style TargetType="StatusBar">
       <Setter Property="Background" Value="#FFBCC7D8"/>
@@ -44,7 +52,7 @@
       <RowDefinition Height="*"/>
       <RowDefinition Height="Auto"/>
     </Grid.RowDefinitions>
-    <DataGrid Grid.Row="1" Name="dataGrid1" SelectedCellsChanged="dataGrid1_SelectedCellsChanged" MouseDoubleClick="dataGrid1_MouseDoubleClick" GotFocus="dataGrid1_GotFocus">
+    <DataGrid Grid.Row="1" Name="dataGrid1" SelectedCellsChanged="dataGrid1_SelectedCellsChanged" MouseDoubleClick="dataGrid1_MouseDoubleClick" GotFocus="dataGrid1_GotFocus" CellStyle='{StaticResource CellStyle}'>
       <DataGrid.Columns>
         <DataGridTextColumn Header="Name" Width="*" Binding="{Binding Path=Name}"/>
         <DataGridTextColumn Header="Text" Width="2*" IsReadOnly="True" Binding="{Binding Path=Text}"/>
