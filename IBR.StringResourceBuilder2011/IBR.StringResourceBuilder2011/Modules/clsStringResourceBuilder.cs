@@ -444,7 +444,8 @@ namespace IBR.StringResourceBuilder2011.Modules
         } //foreach
         #endregion
 
-        //close the ResX file to modify it
+        //close the ResX file to modify it (force a checkout)
+        prjItem.Document.Save(); //[13-07-10 DR]: MS has changed behavior of Close(vsSaveChanges.vsSaveChangesYes) in VS2012
         prjItem.Document.Close(vsSaveChanges.vsSaveChangesYes);
 
         string name,
