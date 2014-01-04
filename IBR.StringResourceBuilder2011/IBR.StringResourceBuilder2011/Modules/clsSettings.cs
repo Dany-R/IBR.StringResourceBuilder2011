@@ -43,6 +43,13 @@ namespace IBR.StringResourceBuilder2011
       set { m_IsIgnoreNumberStrings = value; }
     }
 
+    private bool m_IsIgnoreVerbatimStrings /*= false*/;
+    public bool IsIgnoreVerbatimStrings
+    {
+      get { return (m_IsIgnoreVerbatimStrings); }
+      set { m_IsIgnoreVerbatimStrings = value; }
+    }
+
     private bool m_IsIgnoreStringLength = true;
     public bool IsIgnoreStringLength
     {
@@ -164,7 +171,7 @@ namespace IBR.StringResourceBuilder2011
       if (m_IsIgnoreWhiteSpaceStrings && string.IsNullOrEmpty(text.Trim(' ', '\t')))
         return (true);
 
-      if (IsIgnoreNumberStrings && ms_RegexNumber.IsMatch(text))
+      if (m_IsIgnoreNumberStrings && ms_RegexNumber.IsMatch(text))
         return (true);
 
       if (m_IgnoreStrings.Contains(text))
