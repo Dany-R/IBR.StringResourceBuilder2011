@@ -407,7 +407,8 @@ namespace IBR.StringResourceBuilder2011.Modules
             #region @-string (@"...") or Basic string
             if (part != string.Empty)
             {
-              txt.Append(part);
+              if (!settings.IsIgnoreVerbatimStrings)
+                txt.Append(part);
               pos += part.Length;
             } //if
 
@@ -424,7 +425,8 @@ namespace IBR.StringResourceBuilder2011.Modules
 
               while (count >= 2)
               {
-                txt.Append("\"\"");
+                if (!settings.IsIgnoreVerbatimStrings)
+                  txt.Append("\"\"");
                 count -= 2;
                 pos += 2;
               } //while
@@ -461,7 +463,7 @@ namespace IBR.StringResourceBuilder2011.Modules
             #endregion
           } //else
 
-          if (!isInString)
+          if (!isInString && (!isAtString || !settings.IsIgnoreVerbatimStrings))
             txt.Append("\0"); //for later splitting
         } //else
       } //for
@@ -476,7 +478,10 @@ namespace IBR.StringResourceBuilder2011.Modules
         for (int i = 0; i < parts.Length; ++i)
         {
           string draftName = parts[i],
-                 name = string.Empty;
+                 name      = string.Empty;
+
+          if (settings.IgnoreString(draftName))
+            continue;
 
           for (int c = 0; c < draftName.Length; ++c)
           {
@@ -496,9 +501,6 @@ namespace IBR.StringResourceBuilder2011.Modules
           //int count = GetFirstFreeNameIndex(name, stringResources);
           //if (count > 0)
           //  name += "_" + count.ToString();
-
-          if (settings.IgnoreString(draftName))
-            continue;
 
           stringResources.Add(new StringResource(name, draftName, new System.Drawing.Point(lineNo, stringPos[i] + colNo - 1)));
         } //for

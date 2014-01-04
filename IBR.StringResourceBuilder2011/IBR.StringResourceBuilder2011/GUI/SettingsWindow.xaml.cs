@@ -30,10 +30,11 @@ namespace IBR.StringResourceBuilder2011.GUI
     {
       m_Settings = settings;
 
-      this.cbIgnoreWhiteSpaceStrings.IsChecked      = m_Settings.IsIgnoreWhiteSpaceStrings;
-      this.cbIgnoreNumberStrings.IsChecked          = m_Settings.IsIgnoreNumberStrings;
       this.cbIgnoreUpToNCharactersStrings.IsChecked = m_Settings.IsIgnoreStringLength;
       this.nudIgnoreStringLength.Value              = (decimal)m_Settings.IgnoreStringLength;
+      this.cbIgnoreWhiteSpaceStrings.IsChecked      = m_Settings.IsIgnoreWhiteSpaceStrings;
+      this.cbIgnoreNumberStrings.IsChecked          = m_Settings.IsIgnoreNumberStrings;
+      this.cbIgnoreVerbatimStrings.IsChecked        = m_Settings.IsIgnoreVerbatimStrings;
       this.cbUseGlobalResourceFile.IsChecked        = m_Settings.IsUseGlobalResourceFile;
       this.txtGlobalResourceFileName.Text           = m_Settings.GlobalResourceFileName;
 
@@ -103,10 +104,11 @@ namespace IBR.StringResourceBuilder2011.GUI
       if (m_Settings == null)
         m_Settings = new Settings();
 
-      m_Settings.IsIgnoreWhiteSpaceStrings = this.cbIgnoreWhiteSpaceStrings.IsChecked ?? false;
-      m_Settings.IsIgnoreNumberStrings     = this.cbIgnoreNumberStrings.IsChecked ?? false;
       m_Settings.IsIgnoreStringLength      = this.cbIgnoreUpToNCharactersStrings.IsChecked ?? false;
       m_Settings.IgnoreStringLength        = (int)this.nudIgnoreStringLength.Value;
+      m_Settings.IsIgnoreWhiteSpaceStrings = this.cbIgnoreWhiteSpaceStrings.IsChecked ?? false;
+      m_Settings.IsIgnoreNumberStrings     = this.cbIgnoreNumberStrings.IsChecked ?? false;
+      m_Settings.IsIgnoreVerbatimStrings   = this.cbIgnoreVerbatimStrings.IsChecked ?? false;
       m_Settings.IsUseGlobalResourceFile   = this.cbUseGlobalResourceFile.IsChecked ?? false;
       m_Settings.GlobalResourceFileName    = (this.txtGlobalResourceFileName.Text ?? string.Empty).Trim();
 

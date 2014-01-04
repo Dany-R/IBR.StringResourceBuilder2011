@@ -74,6 +74,7 @@
               </CheckBox>
               <CheckBox Margin="0,0,0,8" Name="cbIgnoreWhiteSpaceStrings" Content="Ignore white space strings (entirely blanks and/or tabs)" />
               <CheckBox Margin="0,0,0,8" Name="cbIgnoreNumberStrings" Content="Ignore number strings (&quot;1234&quot;, &quot;12.34&quot;, &quot;  1234&quot;, &quot;1234  &quot; but not &quot;123  4&quot;, &quot;12,34&quot;)"></CheckBox>
+              <CheckBox Margin="0,0,0,8" Name="cbIgnoreVerbatimStrings" Content="Ignore verbatim strings (preceded by '@' character as in @&quot;my string&quot;)"></CheckBox>
             </StackPanel>
           </GroupBox>
           <GroupBox Grid.Row="1" Margin="2" Header="Other Options">
