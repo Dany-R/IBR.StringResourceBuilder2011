@@ -14,6 +14,22 @@
 
 
 
+1.5 Release 1 ======================================================================================
+Date        Version   Changes
+2016-02-27  1.5.1.19  Fixed: Handling new C#6 features:
+                             - Expression bodied properties, functions and indexers.
+                             - Interpolated strings ($"...") -> ignored completely.
+                      Changed: .NET Framework V4.5.2.
+                      New: Using Visual Studio 2015 (using VSPackage Builder result without the
+                           extension as it sadly exists only for VS2010).
+                      New: Uses NuGet Packages
+                           - Microsoft.VisualStudio.Shell.14.0
+                           - Microsoft.VisualStudio.Shell.Interop.12.0
+
+
+1.4 Release 1 (number skipped) =====================================================================
+
+
 1.3 Release 7 ======================================================================================
 Date        Version   Changes
 
