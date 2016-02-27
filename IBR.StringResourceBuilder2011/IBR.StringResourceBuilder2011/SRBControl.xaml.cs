@@ -187,6 +187,9 @@ namespace IBR.StringResourceBuilder2011
 
     private void dataGrid1_GotFocus(object sender, RoutedEventArgs e)
     {
+      if (this.dataGrid1.IsMouseOver)
+        return;
+
       //sadly, the DataGrid sets the focus to the first cell when focus returns so we restore it here
       ResetCurrentCellToSelection();
     }
