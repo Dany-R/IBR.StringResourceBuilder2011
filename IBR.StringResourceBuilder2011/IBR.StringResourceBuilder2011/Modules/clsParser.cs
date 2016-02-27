@@ -52,6 +52,10 @@ namespace IBR.StringResourceBuilder2011.Modules
 
     #region Private methods
 
+    /// <summary>Parses for strings by iterating through the FileCodeModel.</summary>
+    /// <param name="startPoint">The start point.</param>
+    /// <param name="endPoint">The end point.</param>
+    /// <param name="lastDocumentLength">Last length of the document.</param>
     private void ParseForStrings(TextPoint startPoint,
                                  TextPoint endPoint,
                                  int lastDocumentLength)
@@ -72,7 +76,7 @@ namespace IBR.StringResourceBuilder2011.Modules
         m_StringResources.Clear();
       else
       {
-        #region document manipulated
+        #region document manipulated -> adapt string resources and locations
 
         //determine whether the text between startLine and endLine (including) contains double quotes
         EditPoint editPoint = startPoint.CreateEditPoint() as EditPoint2;
@@ -133,6 +137,23 @@ namespace IBR.StringResourceBuilder2011.Modules
         foreach (CodeElement element in elements)
         {
           ParseForStrings(element, m_DoProgress, stringResources, m_Settings, m_IsCSharp, startLine, endLine);
+
+#if DEBUG
+          if (element.Kind == vsCMElement.vsCMElementProperty)
+          {
+            CodeProperty prop = element as CodeProperty;
+
+            if ((prop.Getter == null) && (prop.Setter == null))
+            {
+              //here we have an expression bodied property
+              //if (m_IVsTextView != null)
+              //{
+              //  m_IVsTextView.
+              //}
+            }
+          }
+#endif
+
         } //foreach
 
 #if DEBUG_OUTPUT
@@ -148,8 +169,16 @@ namespace IBR.StringResourceBuilder2011.Modules
       m_DoCompleted(isFullDocument || (stringResources.Count > 0));
     }
 
+    /// <summary>Parses for strings by evaluating the element kind.</summary>
+    /// <param name="element">The element.</param>
+    /// <param name="progressWorker">The progress worker.</param>
+    /// <param name="stringResources">The string resources.</param>
+    /// <param name="settings">The settings.</param>
+    /// <param name="isCSharp">If set to <c>true</c> it is CSharp code.</param>
+    /// <param name="startLine">The start line.</param>
+    /// <param name="endLine">The end line.</param>
     private static void ParseForStrings(CodeElement element,
-                                        Action<int> worker,
+                                        Action<int> progressWorker,
                                         List<StringResource> stringResources,
                                         Settings settings,
                                         bool isCSharp,
@@ -180,10 +209,6 @@ namespace IBR.StringResourceBuilder2011.Modules
       System.Diagnostics.Debug.Print("  > ParseForStrings({0} '{1}')", element.Kind, elementName);
 #endif
 
-      EditPoint2 editPoint  = null;
-      TextPoint  startPoint = null,
-                 endPoint   = null;
-
       if (element.IsCodeType
           && ((element.Kind == vsCMElement.vsCMElementClass)
               || (element.Kind == vsCMElement.vsCMElementStruct)))
@@ -191,22 +216,32 @@ namespace IBR.StringResourceBuilder2011.Modules
         CodeElements elements = (element as CodeType).Members;
 
         foreach (CodeElement element2 in elements)
-          ParseForStrings(element2, worker, stringResources, settings, isCSharp, startLine, endLine);
+          ParseForStrings(element2, progressWorker, stringResources, settings, isCSharp, startLine, endLine);
       }
       else if (element.Kind == vsCMElement.vsCMElementNamespace)
       {
         CodeElements elements = (element as CodeNamespace).Members;
 
         foreach (CodeElement element2 in elements)
-          ParseForStrings(element2, worker, stringResources, settings, isCSharp, startLine, endLine);
+          ParseForStrings(element2, progressWorker, stringResources, settings, isCSharp, startLine, endLine);
       }
       else if (element.Kind == vsCMElement.vsCMElementProperty)
       {
         CodeProperty prop = element as CodeProperty;
+
         if (prop.Getter != null)
-          ParseForStrings(prop.Getter as CodeElement, worker, stringResources, settings, isCSharp, startLine, endLine);
+          ParseForStrings(prop.Getter as CodeElement, progressWorker, stringResources, settings, isCSharp, startLine, endLine);
+
         if (prop.Setter != null)
-          ParseForStrings(prop.Setter as CodeElement, worker, stringResources, settings, isCSharp, startLine, endLine);
+          ParseForStrings(prop.Setter as CodeElement, progressWorker, stringResources, settings, isCSharp, startLine, endLine);
+
+        if ((prop.Getter == null) && (prop.Setter == null))
+        {
+          //expression bodied property
+          int lineNo = ParseForStrings(element, stringResources, settings, isCSharp, startLine, endLine);
+          if (lineNo > -1)
+            progressWorker(lineNo);
+        } //if
       }
       else if ((element.Kind == vsCMElement.vsCMElementFunction)
                || (element.Kind == vsCMElement.vsCMElementVariable))
@@ -214,23 +249,55 @@ namespace IBR.StringResourceBuilder2011.Modules
         if ((element.Kind == vsCMElement.vsCMElementFunction) && settings.IgnoreMethod(element.Name))
           return;
 
-        try
+        int lineNo = ParseForStrings(element, stringResources, settings, isCSharp, startLine, endLine);
+        if (lineNo > -1)
+          progressWorker(lineNo);
+      } //else if
+    }
+
+    /// <summary>Parses for strings by iterating through the text lines.</summary>
+    /// <param name="element">The element.</param>
+    /// <param name="stringResources">The string resources.</param>
+    /// <param name="settings">The settings.</param>
+    /// <param name="isCSharp">If set to <c>true</c> it is CSharp code.</param>
+    /// <param name="startLine">The start line.</param>
+    /// <param name="endLine">The end line.</param>
+    /// <returns>The last parsed line number or -1.</returns>
+    private static int ParseForStrings(CodeElement element,
+                                       List<StringResource> stringResources,
+                                       Settings settings,
+                                       bool isCSharp,
+                                       int startLine,
+                                       int endLine)
+    {
+      TextPoint  startPoint = element.StartPoint,
+                 endPoint   = element.EndPoint;
+      EditPoint2 editPoint  = null;
+
+      try
+      {
+        if (element.Kind == vsCMElement.vsCMElementFunction)
         {
-          if (element.Kind == vsCMElement.vsCMElementFunction)
+#if DEBUG_OUTPUT
+          System.Diagnostics.Debug.Print("    function kind: {0}", (element as CodeFunction).FunctionKind);
+#endif
+
+          try
           {
+            //we want to have the body only (throws COMException when inspecting an expression bodied function)
             startPoint = element.GetStartPoint(vsCMPart.vsCMPartBody);
             endPoint   = element.GetEndPoint(vsCMPart.vsCMPartBody);
           }
-          else
+          catch (Exception ex)
           {
-            startPoint = element.StartPoint;
-            endPoint   = element.EndPoint;
-          } //else
+            System.Diagnostics.Debug.Print("ParseForStrings(vsCMElementFunction, line {0}): {1} - {2}", startPoint.Line, ex.GetType().Name, ex.Message);
+          }
+        } //if
 
-          editPoint = startPoint.CreateEditPoint() as EditPoint2;
+        editPoint = startPoint.CreateEditPoint() as EditPoint2;
 
-          //if ((element.Kind == vsCMElement.vsCMElementVariable) && (startPoint.LineCharOffset > 1))
-          //  editPoint.CharLeft(startPoint.LineCharOffset - 1);
+        //if ((element.Kind == vsCMElement.vsCMElementVariable) && (startPoint.LineCharOffset > 1))
+        //  editPoint.CharLeft(startPoint.LineCharOffset - 1);
 
 //#if DEBUG
 //        if (element.Kind == vsCMElement.vsCMElementFunction)
@@ -238,86 +305,92 @@ namespace IBR.StringResourceBuilder2011.Modules
 //        else
 //          System.Diagnostics.Debug.Print("got a variable, named: {0} in line {1} to {2}", element.Name, element.StartPoint.Line, element.EndPoint.Line);
 //#endif
-          //if (element.Children.Count > 0)
-          //  editPoint = element.Children.Item(element.Children.Count).EndPoint.CreateEditPoint() as EditPoint2;
-          //else
-          //  editPoint = element.StartPoint.CreateEditPoint() as EditPoint2;
+        //if (element.Children.Count > 0)
+        //  editPoint = element.Children.Item(element.Children.Count).EndPoint.CreateEditPoint() as EditPoint2;
+        //else
+        //  editPoint = element.StartPoint.CreateEditPoint() as EditPoint2;
 //#if DEBUG
 //        if (element.Children.Count > 0) System.Diagnostics.Debug.Print("      line {0} to {1}", editPoint.Line, element.EndPoint.Line);
 //#endif
 
-          #region veeeeeery sloooooow
-          //int endPoint      = element.EndPoint.Line,
-          //    endColumn     = element.EndPoint.LineCharOffset,
-          //    absoluteEnd   = element.EndPoint.AbsoluteCharOffset,
-          //    editLine      = editPoint.Line,
-          //    editColumn    = editPoint.LineCharOffset,
-          //    absoluteStart = editPoint.AbsoluteCharOffset,
-          //    editLength    = (editLine == endPoint) ? (absoluteEnd - absoluteStart + 1)
-          //                                           : (editPoint.LineLength - editColumn + 1);
+        #region veeeeeery sloooooow
+        //int endPoint      = element.EndPoint.Line,
+        //    endColumn     = element.EndPoint.LineCharOffset,
+        //    absoluteEnd   = element.EndPoint.AbsoluteCharOffset,
+        //    editLine      = editPoint.Line,
+        //    editColumn    = editPoint.LineCharOffset,
+        //    absoluteStart = editPoint.AbsoluteCharOffset,
+        //    editLength    = (editLine == endPoint) ? (absoluteEnd - absoluteStart + 1)
+        //                                           : (editPoint.LineLength - editColumn + 1);
 
-          //while ((editLine < endPoint) || ((editLine == endPoint) && (editColumn <= endColumn)))
-          //{
-          //  string textLine = editPoint.GetText(editLength);
+        //while ((editLine < endPoint) || ((editLine == endPoint) && (editColumn <= endColumn)))
+        //{
+        //  string textLine = editPoint.GetText(editLength);
 
-          //  //System.Diagnostics.Debug.Print(">>>{0}<<<", textLine);
+        //  //System.Diagnostics.Debug.Print(">>>{0}<<<", textLine);
 
-          //  if (!string.IsNullOrEmpty(textLine.Trim()))
-          //    ParseForStrings(textLine, editLine, editColumn, stringResources, settings);
+        //  if (!string.IsNullOrEmpty(textLine.Trim()))
+        //    ParseForStrings(textLine, editLine, editColumn, stringResources, settings);
 
-          //  editPoint.LineDown(1);
-          //  editPoint.StartOfLine();
+        //  editPoint.LineDown(1);
+        //  editPoint.StartOfLine();
 
-          //  editLine      = editPoint.Line;
-          //  editColumn    = editPoint.LineCharOffset;
-          //  absoluteStart = editPoint.AbsoluteCharOffset;
-          //  editLength    = (editLine == endPoint) ? (absoluteEnd - absoluteStart + 1)
-          //                                         : (editPoint.LineLength - editColumn + 1);
-          //} //while
-          #endregion
+        //  editLine      = editPoint.Line;
+        //  editColumn    = editPoint.LineCharOffset;
+        //  absoluteStart = editPoint.AbsoluteCharOffset;
+        //  editLength    = (editLine == endPoint) ? (absoluteEnd - absoluteStart + 1)
+        //                                         : (editPoint.LineLength - editColumn + 1);
+        //} //while
+        #endregion
 
-          //this is much faster (by factors)!!!
-          int      editLine   = editPoint.Line,
-                   editColumn = editPoint.LineCharOffset;
-          string   text       = editPoint.GetText(endPoint);
-          string[] lines      = text.Replace("\r", string.Empty).Split('\n');
-          bool     isComment  = false;
+        //this is much faster (by factors)!!!
+        int      editLine                = editPoint.Line,
+                 editColumn              = editPoint.LineCharOffset;
+        string   text                    = editPoint.GetText(endPoint);
+        string[] txtLines                = text.Replace("\r", string.Empty).Split('\n');
+        bool     isComment               = false;
 #if IGNORE_METHOD_ARGUMENTS
-          bool     isIgnoreMethodArguments = false;
+        bool     isIgnoreMethodArguments = false;
 #endif
 
-          foreach (string line in lines)
+        foreach (string txtLine in txtLines)
+        {
+          if ((editLine >= startLine) && (editLine <= endLine))
           {
-            if ((editLine >= startLine) && (editLine <= endLine))
-            {
-              //this is a changed text line in the block
+            //this is a changed text line in the block
 
 #if !IGNORE_METHOD_ARGUMENTS
-              if (line.Contains("\""))
-                ParseForStrings(line, editLine, editColumn, stringResources, settings, isCSharp, ref isComment);
+            if (txtLine.Contains("\""))
+              ParseForStrings(txtLine, editLine, editColumn, stringResources, settings, isCSharp, ref isComment);
 #else
-              if (line.Contains("\""))
-                ParseForStrings(line, editLine, editColumn, stringResources, settings, ref isComment, ref isIgnoreMethodArguments);
+            if (line.Contains("\""))
+              ParseForStrings(line, editLine, editColumn, stringResources, settings, ref isComment, ref isIgnoreMethodArguments);
 #endif
-            } //if
+          } //if
 
-            ++editLine;
+          ++editLine;
 
-            //only for the first line of the text block LineCharOffset will be used
-            if (editColumn > 1)
-              editColumn = 1;
-          } //foreach
-        }
-        catch (Exception ex)
-        {
-          System.Diagnostics.Debug.Print("### Error: ParseForStrings(): {0} - {1}", ex.GetType().Name, ex.Message);
-        }
-      } //else if
+          //only for the first line of the text block LineCharOffset will be used
+          if (editColumn > 1)
+            editColumn = 1;
+        } //foreach
+      }
+      catch (Exception ex)
+      {
+        System.Diagnostics.Debug.Print("### Error: ParseForStrings(): {0} - {1}", ex.GetType().Name, ex.Message);
+      }
 
-      if (endPoint != null)
-        worker(endPoint.Line);
+      return (endPoint?.Line??(-1));
     }
 
+    /// <summary>Parses for strings by iterating through the parts between double quotes.</summary>
+    /// <param name="txtLine">The text line.</param>
+    /// <param name="lineNo">The line number.</param>
+    /// <param name="colNo">The column number.</param>
+    /// <param name="stringResources">The string resources.</param>
+    /// <param name="settings">The settings.</param>
+    /// <param name="isCSharp">If set to <c>true</c> it is CSharp code.</param>
+    /// <param name="isComment">If set to <c>true</c> it starts (in) or ends (out) with a comment.</param>
     private static void ParseForStrings(string txtLine,
                                         int lineNo,
                                         int colNo,
@@ -335,7 +408,8 @@ namespace IBR.StringResourceBuilder2011.Modules
       List<int> stringPos = new List<int>();
 
       bool isInString = false,
-           isAtString = false; // @"..."
+           isAtString           = false, // @"..."
+           isInterpolatedString = false; // $"..."
       StringBuilder txt = new StringBuilder();
       int pos = 0;
 
@@ -344,6 +418,8 @@ namespace IBR.StringResourceBuilder2011.Modules
       for (int i = 0; i < parts.Length; ++i)
       {
         string part = parts[i];
+
+        bool isEmptyPart = (part.Length == 0);
 
         if (!isInString)
         {
@@ -393,7 +469,8 @@ namespace IBR.StringResourceBuilder2011.Modules
             continue;
 #endif
 
-          isAtString = isCSharp && part.EndsWith("@");
+          isAtString           = !isCSharp || part.EndsWith("@");
+          isInterpolatedString = isCSharp && (part.EndsWith("$") || part.EndsWith("$@"));
 
           stringPos.Add(pos);
 
@@ -402,10 +479,81 @@ namespace IBR.StringResourceBuilder2011.Modules
         }
         else //if (isInString)
         {
-          if (isAtString || !isCSharp)
+          if (isInterpolatedString)
+          {
+            //[16-02-20 DR]: ignored for now
+            #region $-string ($"...") or $@-string ($@"...")
+            //e.g. $"{m_MyString4} is \"also\" a {m_MyString3 + " value."} {{x}} {{\"x\"}}"
+            //     $@"{m_MyString4} is ""also"" a {m_MyString3 + " value."} {{x}} {{""x""}}"
+            //I hope that nobody nests interpolated strings as in $"foo {bar + $"some {bar2} value."}"
+
+#if DEBUG
+            //string a = "1",
+            //       b = "2",
+            //       x = $"{a} is \"also\" a {b + " \"value\"."} {{x}} {{\"x\"}}"
+            //         + $@"{a} is ""also"" a {b + @" ""value""."
+            //                                   + "substring "} {{x}} {{""x""}}"
+            //         + $"foo {a + $"some {b} value."}"
+            //         + "! {a}";
+#endif
+
+            //SkipInterpolatedString
+            if (isAtString && isEmptyPart)
+            {
+              //handle leading double quotes
+              isInString = SkipDoubleQuotes(txtLine, ref pos, ref i);
+              continue;
+            } //if
+
+            if (!isAtString || !isEmptyPart)
+              pos += part.Length + 1;
+
+            if (part.Contains("{{"))
+              part = part.Replace("{{", "##");
+            if (part.Contains("}}"))
+              part = part.Replace("}}", "##");
+            if (part.Contains(@"\\"))
+              part = part.Replace(@"\\", "##");
+
+            int openCurlyBraces = IterateCurlyBraceBlocks(part);
+
+            if (openCurlyBraces > 0)
+            {
+              #region skip nested string
+
+              //LanguageServices MatchBraces BeginParse
+
+              //if (part.EndsWith("$") || part.EndsWith("$@"))
+              //{
+              //  //SkipInterpolatedString
+              //}
+              //else
+              ////SkipNestedString
+              //if (part.EndsWith("@"))
+              //{
+              //  SkipDoubleQuotes(txtLine, ref pos, ref i);
+              //}
+              //else if (part.EndsWith("\\"))
+              //{ }
+#if DEBUG
+              System.Diagnostics.Debug.Print("ignoring >>{0}<<", txtLine);
+              System.Diagnostics.Debugger.Break();
+#endif
+              break; //[16-02-27 DR]: ignored completely
+
+              #endregion
+            }
+
+            if (isAtString)
+              isInString = !SkipDoubleQuotes(txtLine, ref pos, ref i); //handle trailing double quotes (inverted result)
+            else if (!part.EndsWith(@"\"))
+              isInString = false;
+            #endregion
+          }
+          else if (isAtString)
           {
             #region @-string (@"...") or Basic string
-            if (part != string.Empty)
+            if (!isEmptyPart)
             {
               if (!settings.IsIgnoreVerbatimStrings)
                 txt.Append(part);
@@ -413,10 +561,7 @@ namespace IBR.StringResourceBuilder2011.Modules
             } //if
 
             //here double quotes are given as pairs
-            int count = pos;
-            while ((count < txtLine.Length) && (txtLine[count] == '"'))
-              ++count;
-            count -= pos;
+            int count = CountDoubleQuotes(txtLine, pos);
 
             if (count > 1)
             {
@@ -506,6 +651,74 @@ namespace IBR.StringResourceBuilder2011.Modules
         } //for
         #endregion
       } //if
+    }
+
+    /// <summary>Skips the double quotes.</summary>
+    /// <param name="txtLine">The text line.</param>
+    /// <param name="pos">The position.</param>
+    /// <param name="i">The i.</param>
+    /// <returns>
+    /// <c>true</c> when the number of found double qoutes is even, meaning we are still within a string;
+    /// otherwise <c>false</c>.
+    /// </returns>
+    private static bool SkipDoubleQuotes(string txtLine,
+                                         ref int pos,
+                                         ref int i)
+    {
+      //skip empty parts from double quote pairs:
+      //"x"     = true(0),  -> never occurs here (called only when part is empty)
+      //""      = false(1),
+      //"""x"   = true(2),
+      //""""    = false(3),
+      //"""""x" = true(4)
+
+      int count = CountDoubleQuotes(txtLine, pos);
+
+      if (count > 0)
+      {
+        i += count - 1;
+
+        pos += count;
+      } //if
+
+      return ((count & 1) == 0); //isInString
+    }
+
+    /// <summary>Counts the consecutive double quotes.</summary>
+    /// <param name="txtLine">The text line.</param>
+    /// <param name="startPos">The start position.</param>
+    /// <returns>The number of consecutive double quotes.</returns>
+    private static int CountDoubleQuotes(string txtLine,
+                                         int startPos)
+    {
+      int count = startPos;
+
+      while ((count < txtLine.Length) && (txtLine[count] == '"'))
+        ++count;
+
+      count -= startPos;
+
+      return (count);
+    }
+
+    /// <summary>Iterates through the curly brace blocks.</summary>
+    /// <param name="part">The part.</param>
+    /// <returns>The number of unclosed (still open) curly brace blocks.</returns>
+    private static int IterateCurlyBraceBlocks(string part)
+    {
+      int openCurlyBraces = 0;
+
+      for (int j = 0; j < part.Length; ++j)
+      {
+        char c = part[j];
+
+        if (c == '{')
+          ++openCurlyBraces;
+        else if (c == '}')
+          --openCurlyBraces;
+      } //for
+
+      return (openCurlyBraces);
     }
 
     //[12-10-03 DR]: Indexing no longer in use
