@@ -16,6 +16,17 @@
 
 1.5 Release 1 ======================================================================================
 Date        Version   Changes
+
+2016-12-10  1.5.2.20  Changed: Manifest changed to support only VS2015 and later from now on.
+                      Changed: No code generation anymore as VSPackage Builder runs only in VS2010.
+                      Updated: NuGet Packages.
+                      New: extension.vsixmanifest updated for Visual Studio 2017 (V15.0).
+                      New: VSIX and DLL signed now.
+
+
+1.5 Release 1 ======================================================================================
+Date        Version   Changes
+
 2016-02-27  1.5.1.19  Fixed: Handling new C#6 features:
                              - Expression bodied properties, functions and indexers.
                              - Interpolated strings ($"...") -> ignored completely.

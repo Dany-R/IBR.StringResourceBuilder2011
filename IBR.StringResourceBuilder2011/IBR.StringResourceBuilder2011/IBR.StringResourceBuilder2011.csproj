@@ -44,26 +44,10 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="GeneratedCode\Guids.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Guids.tt</DependentUpon>
-    </Compile>
-    <Compile Include="GeneratedCode\Package.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Package.tt</DependentUpon>
-    </Compile>
-    <Compile Include="GeneratedCode\PkgCmdID.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>PkgCmdID.tt</DependentUpon>
-    </Compile>
-    <Compile Include="GeneratedCode\ToolWindowBase.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>ToolWindowBase.tt</DependentUpon>
-    </Compile>
+    <Compile Include="GeneratedCode\Guids.cs" />
+    <Compile Include="GeneratedCode\Package.cs" />
+    <Compile Include="GeneratedCode\PkgCmdID.cs" />
+    <Compile Include="GeneratedCode\ToolWindowBase.cs" />
     <Compile Include="GUI\ctlListEditor.xaml.cs">
       <DependentUpon>ctlListEditor.xaml</DependentUpon>
     </Compile>
@@ -93,43 +77,9 @@
     <Compile Include="IBR.StringResourceBuilder2011Package.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="GeneratedCode\IBR.StringResourceBuilder2011.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>IBR.StringResourceBuilder2011.vsct</LastGenOutput>
-    </None>
-    <None Include="GeneratedCode\Guids.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>Guids.cs</LastGenOutput>
-    </None>
-    <None Include="GeneratedCode\ToolWindowBase.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>ToolWindowBase.cs</LastGenOutput>
-    </None>
-    <None Include="GeneratedCode\ToolWindow.tt">
-    </None>
-    <None Include="GeneratedCode\Package.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>Package.cs</LastGenOutput>
-    </None>
-    <None Include="GeneratedCode\WinFormControl.tt">
-    </None>
-    <None Include="GeneratedCode\WinFormControlCS.tt">
-    </None>
-    <None Include="GeneratedCode\WpfControl.tt">
-    </None>
-    <None Include="GeneratedCode\WpfControlXaml.tt">
-    </None>
-    <None Include="GeneratedCode\PkgCmdID.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>PkgCmdID.cs</LastGenOutput>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
     <VSCTCompile Include="GeneratedCode\IBR.StringResourceBuilder2011.vsct">
       <ResourceName>Menus.ctmenu</ResourceName>
-      <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
-      <DependentUpon>IBR.StringResourceBuilder2011.tt</DependentUpon>
     </VSCTCompile>
   </ItemGroup>
   <ItemGroup>
@@ -149,6 +99,7 @@
     <Resource Include="Images\bt_remove_shadow.png" />
     <Resource Include="Images\Redo.png" />
     <Resource Include="Images\Undo.png" />
+    <None Include="IBR_CodeSigning.pfx" />
     <None Include="Images\Images_24bit.bmp" />
     <Content Include="License.rtf">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
@@ -164,7 +115,7 @@
   </ItemGroup>
   <ItemGroup>
     <Reference Include="Microsoft.VisualStudio.Imaging, Version=14.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.VisualStudio.Imaging.14.1.24720\lib\net45\Microsoft.VisualStudio.Imaging.dll</HintPath>
+      <HintPath>..\packages\Microsoft.VisualStudio.Imaging.14.3.25407\lib\net45\Microsoft.VisualStudio.Imaging.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="Microsoft.VisualStudio.OLE.Interop, Version=7.1.40304.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
@@ -172,7 +123,7 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="Microsoft.VisualStudio.Shell.14.0, Version=14.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.VisualStudio.Shell.14.0.14.1.24720\lib\Microsoft.VisualStudio.Shell.14.0.dll</HintPath>
+      <HintPath>..\packages\Microsoft.VisualStudio.Shell.14.0.14.3.25407\lib\Microsoft.VisualStudio.Shell.14.0.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="Microsoft.VisualStudio.Shell.Immutable.10.0, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
@@ -188,7 +139,7 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="Microsoft.VisualStudio.Shell.Immutable.14.0, Version=14.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.VisualStudio.Shell.Immutable.14.0.14.1.24720\lib\net45\Microsoft.VisualStudio.Shell.Immutable.14.0.dll</HintPath>
+      <HintPath>..\packages\Microsoft.VisualStudio.Shell.Immutable.14.0.14.3.25407\lib\net45\Microsoft.VisualStudio.Shell.Immutable.14.0.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="Microsoft.VisualStudio.Shell.Interop, Version=7.1.40304.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
@@ -227,11 +178,11 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="Microsoft.VisualStudio.Threading, Version=14.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.VisualStudio.Threading.14.1.114\lib\net45\Microsoft.VisualStudio.Threading.dll</HintPath>
+      <HintPath>..\packages\Microsoft.VisualStudio.Threading.14.1.131\lib\net45\Microsoft.VisualStudio.Threading.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="Microsoft.VisualStudio.Utilities, Version=14.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.VisualStudio.Utilities.14.1.24720\lib\net45\Microsoft.VisualStudio.Utilities.dll</HintPath>
+      <HintPath>..\packages\Microsoft.VisualStudio.Utilities.14.3.25407\lib\net45\Microsoft.VisualStudio.Utilities.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="Microsoft.VisualStudio.Validation, Version=14.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
@@ -371,9 +322,23 @@
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
   </PropertyGroup>
+  <PropertyGroup>
+    <SignAssembly>true</SignAssembly>
+  </PropertyGroup>
+  <PropertyGroup>
+    <AssemblyOriginatorKeyFile>IBR_CodeSigning.pfx</AssemblyOriginatorKeyFile>
+  </PropertyGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(VSToolsPath)\VSSDK\Microsoft.VsSDK.targets" Condition="'$(VSToolsPath)' != ''" />
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v10.0\VSSDK\Microsoft.VsSDK.targets" Condition="false" />
+  <PropertyGroup>
+    <PostBuildEvent>echo ----- BEGIN POST -------------------------------------------------------------
+
+"$(SolutionDir)packages\Microsoft.VSSDK.Vsixsigntool.14.3.25407\tools\vssdk\vsixsigntool.exe" sign /f "$(ProjectDir)IBR_CodeSigning.pfx" /p doctore "$(TargetDir)$(TargetName).vsix"
+echo.
+echo ----- END POST -------------------------------------------------------------
+</PostBuildEvent>
+  </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

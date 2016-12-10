@@ -11,16 +11,19 @@
     <Icon>translator.ico</Icon>
     <PreviewImage>StringResourceBuilderPreview2.png</PreviewImage>
     <SupportedProducts>
-      <VisualStudio Version="10.0">
-        <Edition>Pro</Edition> <!-- supports Professional, Premium and Ultimate -->
+      <!--<VisualStudio Version="10.0">
+        <Edition>Pro</Edition>
       </VisualStudio>
       <VisualStudio Version="11.0">
         <Edition>Pro</Edition>
       </VisualStudio>
       <VisualStudio Version="12.0">
         <Edition>Pro</Edition>
-      </VisualStudio>
+      </VisualStudio>-->
       <VisualStudio Version="14.0">
+        <Edition>Pro</Edition> <!-- supports Professional, Premium and Ultimate -->
+      </VisualStudio>
+      <VisualStudio Version="15.0">
         <Edition>Pro</Edition>
       </VisualStudio>
     </SupportedProducts>
