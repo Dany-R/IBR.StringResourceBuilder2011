@@ -1,6 +1,6 @@
 # Documentation
 
-## For Users
+### For Users
 
 [About](About.md)
 
@@ -8,13 +8,13 @@
 
 [Revision History](RevisionHistory.md)
 
-## For Developers
+### For Developers
 
 [Prerequisites](Prerequisites.md)
 
 [History](History.md)
 
-## Copyright Notices
+### Copyright Notices
 
 * Microsoft Visual Studio 2015 is Copyright (c) 2015 Microsoft Corporation, All Rights Reserved.
 * Microsoft Visual Studio 2013 is Copyright (c) 2013 Microsoft Corporation, All Rights Reserved.
