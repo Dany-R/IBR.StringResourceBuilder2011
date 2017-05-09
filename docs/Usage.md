@@ -1,11 +1,13 @@
 # Usage
 The tool is started via the Tools menu:
+
 ![Tools Menu](Usage_SRBMenu.png)
 
 The presentation of the tool window within the IDE:
+
 ![Tool Window](Usage_StringResourceBuilderPreview.png)
 
-For a 'description' of the buttons (reload, navigate, make, settings) in the tool window please refer to their tool tips.  There is a [settings](Settings) window available (rightmost button) for some filtering.
+For a 'description' of the buttons (reload, navigate, make, settings) in the tool window please refer to their tool tips.  There is a [settings](Settings.md) window available (rightmost button) for some filtering.
 
 The main area of the tool window holds the found string literals of the currently active source window (C# and VB.NET only).
 * The first column holds the resource name to-be, which can be edited before _making_ the resource.
@@ -18,5 +20,5 @@ Editing the source code while the tool window is open will result to a refresh, 
 
 **Hint:** It is recommended to close the tool window while coding because of possible performance hits.
 
-[Next: Revision History](RevisionHistory)
+[Next: Revision History](RevisionHistory.md)
 
