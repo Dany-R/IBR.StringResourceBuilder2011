@@ -187,6 +187,9 @@ ClientBin/
 *.dbmdl
 *.dbproj.schemaview
 *.pfx
+*.pvk
+*.cer
+*.lnk
 *.publishsettings
 node_modules/
 orleans.codegen.cs
@@ -243,3 +246,5 @@ ModelManifest.xml
 
 # FAKE - F# Make
 .fake/
+
+**/IBR_CodeSigning*.bat

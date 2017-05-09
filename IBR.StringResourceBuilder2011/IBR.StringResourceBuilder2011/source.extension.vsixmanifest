@@ -1,40 +1,24 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Vsix xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" Version="1.0.0" xmlns="http://schemas.microsoft.com/developer/vsx-schema/2010">
-  <Identifier Id="IBR.StringResourceBuilder2011.Ingenieur-Büro Rühmer.731646bc-3737-4a6e-83ec-6c9a4e505153">
-    <Name>IBR.StringResourceBuilder2011</Name>
-    <Author>Ingenieur-Büro Rühmer</Author>
-    <Version>1.5.1.19</Version>
+<PackageManifest Version="2.0.0" xmlns="http://schemas.microsoft.com/developer/vsx-schema/2011" xmlns:d="http://schemas.microsoft.com/developer/vsx-schema-design/2011">
+  <Metadata>
+    <Identity Id="IBR.StringResourceBuilder2011.Ingenieur-Büro Rühmer.731646bc-3737-4a6e-83ec-6c9a4e505153" Version="1.5.2.20" Language="en-US" Publisher="Ingenieur-Büro Rühmer" />
+    <DisplayName>IBR.StringResourceBuilder2011</DisplayName>
     <Description xml:space="preserve">Build string resources from string literals within source code for localization.</Description>
-    <Locale>1033</Locale>
-    <MoreInfoUrl>http://visualstudiogallery.msdn.microsoft.com/74ecfb4f-6245-4942-a5b2-67aaacd49415</MoreInfoUrl>
+    <MoreInfo>http://visualstudiogallery.msdn.microsoft.com/74ecfb4f-6245-4942-a5b2-67aaacd49415</MoreInfo>
     <License>License.rtf</License>
     <Icon>translator.ico</Icon>
     <PreviewImage>StringResourceBuilderPreview2.png</PreviewImage>
-    <SupportedProducts>
-      <!--<VisualStudio Version="10.0">
-        <Edition>Pro</Edition>
-      </VisualStudio>
-      <VisualStudio Version="11.0">
-        <Edition>Pro</Edition>
-      </VisualStudio>
-      <VisualStudio Version="12.0">
-        <Edition>Pro</Edition>
-      </VisualStudio>-->
-      <VisualStudio Version="14.0">
-        <Edition>Pro</Edition> <!-- supports Professional, Premium and Ultimate -->
-      </VisualStudio>
-      <VisualStudio Version="15.0">
-        <Edition>Pro</Edition>
-      </VisualStudio>
-    </SupportedProducts>
-    <SupportedFrameworkRuntimeEdition MinVersion="4.0" MaxVersion="4.0" />
-  </Identifier>
-  <References>
-    <Reference Id="Microsoft.VisualStudio.MPF" MinVersion="10.0">
-      <Name>Visual Studio MPF</Name>
-    </Reference>
-  </References>
-  <Content>
-    <VsPackage>|%CurrentProject%;PkgdefProjectOutputGroup|</VsPackage>
-  </Content>
-</Vsix>
+    <Tags>resx, resources, localization, VB.NET, Code Editor, C#, VS2015, Visual Studio 2015, VS2017, Visual Studio 2017</Tags>
+  </Metadata>
+  <Installation>
+    <InstallationTarget Id="Microsoft.VisualStudio.Community" Version="[14.0,)" />
+    <InstallationTarget Version="[14.0,)" Id="Microsoft.VisualStudio.MPF" />
+  </Installation>
+  <Dependencies>
+    <Dependency Id="Microsoft.Framework.NDP" DisplayName="Microsoft .NET Framework" d:Source="Manual" Version="[4.5,)" />
+  </Dependencies>
+  <Prerequisites>
+    <Prerequisite Id="Microsoft.VisualStudio.Component.CoreEditor" Version="[14.0,)" DisplayName="Visual Studio core editor" />
+    <Prerequisite Id="Microsoft.VisualStudio.Component.Roslyn.LanguageServices" Version="[14.0,)" DisplayName="C# and Visual Basic" />
+  </Prerequisites>
+</PackageManifest>
