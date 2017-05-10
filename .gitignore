@@ -248,3 +248,4 @@ ModelManifest.xml
 .fake/
 
 **/IBR_CodeSigning*.bat
+!IBR.StringResourceBuilder2011/IBR.StringResourceBuilder2011.csproj.user
