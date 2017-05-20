@@ -333,8 +333,10 @@
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v10.0\VSSDK\Microsoft.VsSDK.targets" Condition="false" />
   <PropertyGroup>
     <PostBuildEvent>echo ----- BEGIN POST -------------------------------------------------------------
-
-"$(SolutionDir)packages\Microsoft.VSSDK.Vsixsigntool.14.3.25407\tools\vssdk\vsixsigntool.exe" sign /f "$(ProjectDir)IBR_CodeSigning.pfx" /p doctore "$(TargetDir)$(TargetName).vsix"
+echo.
+if EXIST "$(SolutionDir)SignCode.bat" (
+  call "$(SolutionDir)SignCode.bat" "$(SolutionDir)" "$(ProjectDir)IBR_CodeSigning.pfx" "$(TargetDir)$(TargetName).vsix"
+)
 echo.
 echo ----- END POST -------------------------------------------------------------
 </PostBuildEvent>
