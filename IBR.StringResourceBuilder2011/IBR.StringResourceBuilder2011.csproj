@@ -216,7 +216,7 @@
     <PostBuildEvent>echo ----- BEGIN POST -------------------------------------------------------------
 echo.
 if EXIST "$(SolutionDir)SignCode.bat" (
-  call "$(SolutionDir)SignCode.bat" "$(SolutionDir)" "$(ProjectDir)IBR_CodeSigning.pfx" "$(TargetDir)$(TargetName).vsix"
+  call "$(SolutionDir)SignCode.bat" "$(SolutionDir)" "$(ProjectDir)DanielRuehmer_CodeSign.pfx" "$(TargetDir)$(TargetName).vsix"
 )
 echo.
 echo ----- END POST -------------------------------------------------------------
