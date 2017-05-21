@@ -1,12 +1,13 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26403.7
+VisualStudioVersion = 15.0.26430.6
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{2DF9C683-7540-4602-9573-75544B960AC4}"
 	ProjectSection(SolutionItems) = preProject
 		..\.gitignore = ..\.gitignore
 		RevisionHistory.txt = RevisionHistory.txt
+		SignCode.bat = SignCode.bat
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IBR.StringResourceBuilder2011", "IBR.StringResourceBuilder2011\IBR.StringResourceBuilder2011.csproj", "{75B14895-659E-4328-B132-85A1768D0BF2}"

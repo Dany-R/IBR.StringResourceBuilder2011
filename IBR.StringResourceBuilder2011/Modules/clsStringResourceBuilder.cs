@@ -321,7 +321,7 @@ namespace IBR.StringResourceBuilder2011.Modules
       }
       else
       {
-        resourceFileName = m_ProjectExtension.StartsWith("cs") ? "Properties" : "My Project";
+        resourceFileName = m_ProjectExtension.StartsWith("cs", StringComparison.OrdinalIgnoreCase) ? "Properties" : "My Project";
         resourceFileDir  = System.IO.Path.GetDirectoryName(m_Window.ProjectItem.ContainingProject.FullName);
       } //else
 
@@ -340,7 +340,7 @@ namespace IBR.StringResourceBuilder2011.Modules
 
       try
       {
-        prjItem = prjItems.Item(resourceFileName);
+        prjItem = prjItems?.Item(resourceFileName);
       }
       catch { }
 
@@ -354,6 +354,9 @@ namespace IBR.StringResourceBuilder2011.Modules
           prjItem         = null;
           resourceFileDir = System.IO.Path.Combine(resourceFileDir, resourceFileName); //append "Properties"/"My Project" because it exists
         } //if
+
+        if (prjItems == null)
+          return (null); //something went terribly wrong that never should have been possible
 
         if (string.IsNullOrEmpty(m_Settings.GlobalResourceFileName))
           resourceFileName = "Resources.resx"; //standard global resource file
@@ -413,8 +416,8 @@ namespace IBR.StringResourceBuilder2011.Modules
         return (null);
 
       //open the ResX file
-      if (!prjItem.IsOpen[Constants.vsViewKindAny])
-        prjItem.Open(Constants.vsViewKindDesigner);
+      if (!prjItem.IsOpen[EnvDTEConstants.vsViewKindAny])
+        prjItem.Open(EnvDTEConstants.vsViewKindDesigner);
 
       return (prjItem);
     }
@@ -680,7 +683,7 @@ namespace IBR.StringResourceBuilder2011.Modules
 
       if (System.IO.File.Exists(m_SettingsFile))
       {
-        string xml = System.IO.File.ReadAllText(m_SettingsFile, UTF8Encoding.UTF8);
+        string xml = System.IO.File.ReadAllText(m_SettingsFile, Encoding.UTF8);
         m_Settings = Settings.DeSerialize(xml);
       }
       else
@@ -707,7 +710,7 @@ namespace IBR.StringResourceBuilder2011.Modules
       m_Settings.IgnoreMethodsArguments.Remove("@@@disabled@@@");
 #endif
 
-      System.IO.File.WriteAllText(m_SettingsFile, m_Settings.Serialize(), UTF8Encoding.UTF8);
+      System.IO.File.WriteAllText(m_SettingsFile, m_Settings.Serialize(), Encoding.UTF8);
 
 #if !IGNORE_METHOD_ARGUMENTS
       m_Settings.IgnoreMethodsArguments.Add("@@@disabled@@@");

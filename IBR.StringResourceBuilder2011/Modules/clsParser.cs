@@ -188,8 +188,17 @@ namespace IBR.StringResourceBuilder2011.Modules
       if (element == null)
         return;
 
-      if (element.StartPoint.Line > endLine)
+      try
+      {
+        if (element.StartPoint.Line > endLine)
+          return;
+      }
+      catch (Exception ex)
+      {
+        //element.StartPoint not implemented in VS2017 15.2 (26430.6) for expression bodied property getters (VS broken?)
+        System.Diagnostics.Debug.Print("### Error: ParseForStrings(): element.StartPoint.Line > endLine? {0} - {1}", ex.GetType().Name, ex.Message);
         return;
+      }
 
       try
       {
@@ -200,6 +209,7 @@ namespace IBR.StringResourceBuilder2011.Modules
       {
         //element.EndPoint invalid when deleting or cutting text
         System.Diagnostics.Debug.Print("### Error: ParseForStrings(): element.EndPoint < startLine? {0} - {1}", ex.GetType().Name, ex.Message);
+        return;
       }
 
 #if DEBUG_OUTPUT
