@@ -26,7 +26,7 @@ namespace IBR.StringResourceBuilder2011
   /// </para>
   /// </remarks>
   [PackageRegistration(UseManagedResourcesOnly = true)]
-  [InstalledProductRegistration("#110", "#112", "1.0", IconResourceID = 400)] // Info on this package for Help/About
+  [InstalledProductRegistration("#110", "#112", "1.6", IconResourceID = 400)] // Info on this package for Help/About
   [Guid(GuidList.guidIBRStringResourceBuilder2011PkgString)]
   [ProvideMenuResource("Menus.ctmenu", 1)]  // This attribute is needed to let the shell know that this package exposes some menus.
   [ProvideToolWindow(typeof(SRBToolWindow), Orientation=ToolWindowOrientation.Right, Style=VsDockStyle.Float, MultiInstances = false, Transient = true, PositionX = 100 , PositionY = 100 , Width = 600 , Height = 300 )]
@@ -41,7 +41,7 @@ namespace IBR.StringResourceBuilder2011
     /// </summary>
     public IBRStringResourceBuilder2011PackageBase()
     {
-      Trace.WriteLine(string.Format(CultureInfo.CurrentCulture, "Entering constructor for: {0}", this.ToString()));
+      Trace.WriteLine($"Entering constructor for: {this.ToString()}");
     }
 
     /////////////////////////////////////////////////////////////////////////////
@@ -55,7 +55,7 @@ namespace IBR.StringResourceBuilder2011
     /// </summary>
     protected override void Initialize()
     {
-      Trace.WriteLine (string.Format(CultureInfo.CurrentCulture, "Entering Initialize() of: {0}", this.ToString()));
+      Trace.WriteLine ($"Entering Initialize() of: {this.ToString()}");
       base.Initialize();
 
       // Add our command handlers for menu (commands must exist in the .vsct file)
@@ -257,7 +257,7 @@ namespace IBR.StringResourceBuilder2011
       // The last flag is set to true so that if the tool window does not exists it will be created.
       ToolWindowPane window = FindToolWindow(typeof(SRBToolWindow), 0, true);
       if ((null == window) || (null == window.Frame))
-        throw new NotSupportedException(string.Format("Can not create Toolwindow: SRB"));
+        throw new NotSupportedException("Can not create Toolwindow: SRB");
 
       IVsWindowFrame windowFrame = (IVsWindowFrame)window.Frame;
       Microsoft.VisualStudio.ErrorHandler.ThrowOnFailure(windowFrame.Show());

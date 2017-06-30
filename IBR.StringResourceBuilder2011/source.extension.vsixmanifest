@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <PackageManifest Version="2.0.0" xmlns="http://schemas.microsoft.com/developer/vsx-schema/2011" xmlns:d="http://schemas.microsoft.com/developer/vsx-schema-design/2011">
   <Metadata>
-    <Identity Id="IBR.StringResourceBuilder2011.Ingenieur-Büro Rühmer.731646bc-3737-4a6e-83ec-6c9a4e505153" Version="1.5.4.22" Language="en-US" Publisher="Ingenieur-Büro Rühmer" />
+    <Identity Id="IBR.StringResourceBuilder2011.Ingenieur-Büro Rühmer.731646bc-3737-4a6e-83ec-6c9a4e505153" Version="1.6.1.22" Language="en-US" Publisher="Ingenieur-Büro Rühmer" />
     <DisplayName>IBR.StringResourceBuilder2011</DisplayName>
     <Description xml:space="preserve">Build string resources from string literals within source code for localization.</Description>
     <MoreInfo>http://visualstudiogallery.msdn.microsoft.com/74ecfb4f-6245-4942-a5b2-67aaacd49415</MoreInfo>

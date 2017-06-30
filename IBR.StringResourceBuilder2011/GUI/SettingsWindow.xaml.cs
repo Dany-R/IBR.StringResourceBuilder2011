@@ -37,6 +37,7 @@ namespace IBR.StringResourceBuilder2011.GUI
       this.cbIgnoreVerbatimStrings.IsChecked        = m_Settings.IsIgnoreVerbatimStrings;
       this.cbUseGlobalResourceFile.IsChecked        = m_Settings.IsUseGlobalResourceFile;
       this.txtGlobalResourceFileName.Text           = m_Settings.GlobalResourceFileName;
+      this.cbDontUseResourceAlias.IsChecked         = m_Settings.IsDontUseResourceAlias;
 
       this.lstIgnoreStrings.Items    = m_Settings.IgnoreStrings;
       this.lstIgnoreSubStrings.Items = m_Settings.IgnoreSubStrings;
@@ -111,6 +112,7 @@ namespace IBR.StringResourceBuilder2011.GUI
       m_Settings.IsIgnoreVerbatimStrings   = this.cbIgnoreVerbatimStrings.IsChecked ?? false;
       m_Settings.IsUseGlobalResourceFile   = this.cbUseGlobalResourceFile.IsChecked ?? false;
       m_Settings.GlobalResourceFileName    = (this.txtGlobalResourceFileName.Text ?? string.Empty).Trim();
+      m_Settings.IsDontUseResourceAlias    = this.cbDontUseResourceAlias.IsChecked ?? false;
 
       m_Settings.IgnoreStrings.Clear();
       m_Settings.IgnoreStrings.AddRange(this.lstIgnoreStrings.Items);

@@ -78,6 +78,13 @@ namespace IBR.StringResourceBuilder2011
       set { m_GlobalResourceFileName = value; }
     }
 
+    private bool m_IsDontUseResourceAlias/*= false*/;
+    public bool IsDontUseResourceAlias
+    {
+      get { return (m_IsDontUseResourceAlias); }
+      set { m_IsDontUseResourceAlias  = value; }
+    }
+
     private List<string> m_IgnoreStrings = new List<string>();
     public List<string> IgnoreStrings
     {

@@ -18,7 +18,7 @@ using Microsoft.VisualStudio.Shell.Interop;
 namespace IBR.StringResourceBuilder2011
 {
   //these attributes have been copied from base class (IBRStringResourceBuilder2011PackageBase) so that VS can use them
-  [InstalledProductRegistration("#110", "#112", "1.0", IconResourceID = 400)] // Info on this package for Help/About
+  [InstalledProductRegistration("#110", "#112", "1.6", IconResourceID = 400)] // Info on this package for Help/About
   [Guid(GuidList.guidIBRStringResourceBuilder2011PkgString)]
   public class IBRStringResourceBuilder2011Package : IBRStringResourceBuilder2011PackageBase
   {

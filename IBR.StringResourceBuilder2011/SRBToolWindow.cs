@@ -32,7 +32,7 @@ namespace IBR.StringResourceBuilder2011
     /// </summary>
     public SRBToolWindow()
     {
-      Trace.WriteLine(string.Format(CultureInfo.CurrentCulture, "Entering constructor for: {0}", this.ToString()));
+      Trace.WriteLine($"Entering constructor for: {this.ToString()}");
 
       this.Caption = IBR.StringResourceBuilder2011.Properties.Resources.ToolWindowTitle;
 

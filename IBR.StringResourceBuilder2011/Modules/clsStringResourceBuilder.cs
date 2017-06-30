@@ -309,7 +309,7 @@ namespace IBR.StringResourceBuilder2011.Modules
     #region Resource
     private ProjectItem OpenOrCreateResourceFile()
     {
-      ProjectItem prjItem = null;
+      ProjectItem resourceFilePrjItem = null;
 
       string resourceFileName = null,
              resourceFileDir  = null;
@@ -340,19 +340,19 @@ namespace IBR.StringResourceBuilder2011.Modules
 
       try
       {
-        prjItem = prjItems?.Item(resourceFileName);
+        resourceFilePrjItem = prjItems?.Item(resourceFileName);
       }
       catch { }
 
       if (m_Settings.IsUseGlobalResourceFile)
       {
-        bool isPropertiesItem = (prjItem != null);
+        bool isPropertiesItem = (resourceFilePrjItem != null);
 
         if (isPropertiesItem)
         {
-          prjItems        = prjItem.ProjectItems;
-          prjItem         = null;
-          resourceFileDir = System.IO.Path.Combine(resourceFileDir, resourceFileName); //append "Properties"/"My Project" because it exists
+          prjItems            = resourceFilePrjItem.ProjectItems;
+          resourceFilePrjItem = null;
+          resourceFileDir     = System.IO.Path.Combine(resourceFileDir, resourceFileName); //append "Properties"/"My Project" because it exists
         } //if
 
         if (prjItems == null)
@@ -366,12 +366,12 @@ namespace IBR.StringResourceBuilder2011.Modules
         try
         {
           //searches for the global resource
-          prjItem = prjItems.Item(resourceFileName);
+          resourceFilePrjItem = prjItems.Item(resourceFileName);
         }
         catch { }
       } //if
 
-      if (prjItem == null)
+      if (resourceFilePrjItem == null)
       {
         #region not in project but file exists? -> ask user if delete
         string projectPath  = System.IO.Path.GetDirectoryName(m_Window.ProjectItem.ContainingProject.FullName),
@@ -403,35 +403,35 @@ namespace IBR.StringResourceBuilder2011.Modules
 
           //create a new project item based on the template
           /*prjItem =*/ prjItems.AddFromTemplate(itemPath, resourceFileName); //returns always null ...
-          prjItem = prjItems.Item(resourceFileName);
+          resourceFilePrjItem = prjItems.Item(resourceFileName);
         }
         catch (Exception ex)
         {
-          Trace.WriteLine(string.Format("### OpenOrCreateResourceFile() - {0}", ex.ToString()));
+          Trace.WriteLine($"### OpenOrCreateResourceFile() - {ex.ToString()}");
           return (null);
         }
       } //if
 
-      if (prjItem == null)
+      if (resourceFilePrjItem == null)
         return (null);
 
       //open the ResX file
-      if (!prjItem.IsOpen[EnvDTEConstants.vsViewKindAny])
-        prjItem.Open(EnvDTEConstants.vsViewKindDesigner);
+      if (!resourceFilePrjItem.IsOpen[EnvDTEConstants.vsViewKindAny])
+        resourceFilePrjItem.Open(EnvDTEConstants.vsViewKindDesigner);
 
-      return (prjItem);
+      return (resourceFilePrjItem);
     }
 
-    private void BuildAndUseResource(ProjectItem prjItem)
+    private void BuildAndUseResource(ProjectItem resourceFilePrjItem)
     {
       try
       {
-        string resxFile = prjItem.Document.FullName;
+        string resxFile = resourceFilePrjItem.Document.FullName;
 
         string nameSpace = m_Window.Project.Properties.Item("RootNamespace").Value.ToString();
 
         #region get namespace from ResX designer file
-        foreach (ProjectItem item in prjItem.ProjectItems)
+        foreach (ProjectItem item in resourceFilePrjItem.ProjectItems)
         {
           if (item.Name.EndsWith(".resx", StringComparison.InvariantCultureIgnoreCase))
             continue;
@@ -448,8 +448,8 @@ namespace IBR.StringResourceBuilder2011.Modules
         #endregion
 
         //close the ResX file to modify it (force a checkout)
-        prjItem.Document.Save(); //[13-07-10 DR]: MS has changed behavior of Close(vsSaveChanges.vsSaveChangesYes) in VS2012
-        prjItem.Document.Close(vsSaveChanges.vsSaveChangesYes);
+        resourceFilePrjItem.Document.Save(); //[13-07-10 DR]: MS has changed behavior of Close(vsSaveChanges.vsSaveChangesYes) in VS2012
+        resourceFilePrjItem.Document.Close(vsSaveChanges.vsSaveChangesYes);
 
         string name,
                value,
@@ -462,22 +462,27 @@ namespace IBR.StringResourceBuilder2011.Modules
         if (!m_IsCSharp || (m_TextDocument.Selection.Text.Length > 0) && (m_TextDocument.Selection.Text[0] == '@'))
           value = value.Replace("\"\"", "\\\""); // [""] -> [\"] (change VB writing to CSharp)
 
+        //add to the resource file (checking for duplicate)
         if (!AppendStringResource(resxFile, name, value, comment))
           return;
 
-        //create the designer class
-        VSLangProj.VSProjectItem vsPrjItem = prjItem.Object as VSLangProj.VSProjectItem;
+        //(re-)create the designer class
+        VSLangProj.VSProjectItem vsPrjItem = resourceFilePrjItem.Object as VSLangProj.VSProjectItem;
         if (vsPrjItem != null)
           vsPrjItem.RunCustomTool();
 
+        //get the length of the selected string literal and replace by resource call
         int replaceLength = m_TextDocument.Selection.Text.Length;
         if (replaceLength > 0)
         {
           string className    = System.IO.Path.GetFileNameWithoutExtension(resxFile).Replace('.', '_'),
                  aliasName    = className.Substring(0, className.Length - 6), //..._Resources -> ..._Res
-                 resourceCall = string.Format("{0}.{1}", aliasName, name);
+                 resourceCall = string.Concat(aliasName, ".", name);
 
-          if (string.IsNullOrEmpty(m_Settings.GlobalResourceFileName))
+          bool isGlobalResourceFile        = m_Settings.IsUseGlobalResourceFile && string.IsNullOrEmpty(m_Settings.GlobalResourceFileName),
+               isDontUseResourceUsingAlias = m_Settings.IsUseGlobalResourceFile && m_Settings.IsDontUseResourceAlias;
+
+          if (isGlobalResourceFile)
           {
             //standard global resource file
             aliasName    = string.Concat("Glbl", aliasName);
@@ -486,15 +491,28 @@ namespace IBR.StringResourceBuilder2011.Modules
 
           int oldRow = m_TextDocument.Selection.ActivePoint.Line;
 
-          CheckAndAddAlias(nameSpace, className, aliasName);                                           //insert the resource alias (if not yet)
-          m_TextDocument.Selection.Insert(resourceCall, (int)vsInsertFlags.vsInsertFlagsContainNewText); //insert the resource call
+          if (!isDontUseResourceUsingAlias)
+          {
+            //insert the resource using alias (if not yet)
+            CheckAndAddAlias(nameSpace, className, aliasName);
+          }
+          else
+          {
+            //create a resource call like "Properties.SRB_Strings_Resources.myResText", "Properties.Resources.myResText", "Resources.myResText"
+            int lastDotPos = nameSpace.LastIndexOf('.');
+            string resxNameSpace = (lastDotPos >= 0) ? string.Concat(nameSpace.Substring(lastDotPos + 1), ".") : string.Empty;
+            resourceCall = string.Concat(resxNameSpace, className, ".", name);
+          } //else
+
+          //insert the resource call, replacing the selected string literal
+          m_TextDocument.Selection.Insert(resourceCall, (int)vsInsertFlags.vsInsertFlagsContainNewText);
 
           UpdateTableAndSelectNext(resourceCall.Length - replaceLength, m_TextDocument.Selection.ActivePoint.Line - oldRow);
         } //if
       }
       catch (Exception ex)
       {
-        Trace.WriteLine(string.Format("### BuildAndUseResource() - {0}", ex.ToString()));
+        Trace.WriteLine($"### BuildAndUseResource() - {ex.ToString()}");
       }
     }
 
@@ -502,13 +520,13 @@ namespace IBR.StringResourceBuilder2011.Modules
                                   string className,
                                   string aliasName)
     {
-      string resourceAlias1 = string.Format("using {0} = ", aliasName),
-             resourceAlias2 = string.Format("global::{0}.{1}", nameSpace, className);
+      string resourceAlias1 = $"using {aliasName} = ",
+             resourceAlias2 = $"global::{nameSpace}.{className}";
 
       if (!m_IsCSharp)
       {
-        resourceAlias1 = string.Format("Imports {0} = ", aliasName);
-        resourceAlias2 = string.Format("{0}.{1}", nameSpace, className);
+        resourceAlias1 = $"Imports {aliasName} = ";
+        resourceAlias2 = $"{nameSpace}.{className}";
       } //if
 
       CodeElements elements   = m_TextDocument.Parent.ProjectItem.FileCodeModel.CodeElements;
@@ -584,8 +602,7 @@ namespace IBR.StringResourceBuilder2011.Modules
         XmlDocument xmlDoc = new XmlDocument();
         xmlDoc.Load(resxFileName);
 
-        string xmlPath = string.Format("descendant::data[(attribute::name='{0}')]/descendant::value",
-                                       name);
+        string xmlPath = $"descendant::data[(attribute::name='{name}')]/descendant::value";
         XmlNode xmlNode = xmlDoc.DocumentElement.SelectSingleNode(xmlPath);
         if (xmlNode != null)
         {
@@ -655,7 +672,7 @@ namespace IBR.StringResourceBuilder2011.Modules
       }
       catch (Exception ex)
       {
-        Trace.WriteLine(string.Format("### AppendStringResource() - {0}", ex.ToString()));
+        Trace.WriteLine($"### AppendStringResource() - {ex.ToString()}");
         return (false);
       }
 
@@ -1123,12 +1140,12 @@ namespace IBR.StringResourceBuilder2011.Modules
 
       SelectStringInTextDocument();
 
-      ProjectItem prjItem = OpenOrCreateResourceFile();
+      ProjectItem resourceFilePrjItem = OpenOrCreateResourceFile();
 
-      if (prjItem == null)
+      if (resourceFilePrjItem == null)
         return;
 
-      BuildAndUseResource(prjItem);
+      BuildAndUseResource(resourceFilePrjItem);
 
       //SetEnabled();
 

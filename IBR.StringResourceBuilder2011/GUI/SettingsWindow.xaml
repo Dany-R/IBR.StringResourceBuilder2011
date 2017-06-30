@@ -9,9 +9,9 @@
         Icon="/IBR.StringResourceBuilder2011;component/Button%20Bitmaps/translator.png"
         Title="String Resource Builder Settings"
         WindowStartupLocation="CenterScreen"
-        MinWidth="619"
+        MinWidth="650"
         MinHeight="376"
-        d:DesignWidth="619"
+        d:DesignWidth="650"
         d:DesignHeight="376"
         SizeToContent="WidthAndHeight">
   <Window.Resources>
@@ -84,8 +84,16 @@
                   <TextBlock VerticalAlignment="Center" Text="Use global resource file" />
                   <TextBox MinWidth="20" Margin="4,2,0,2" VerticalAlignment="Center" Name="txtGlobalResourceFileName"
                            IsEnabled="{Binding ElementName=cbUseGlobalResourceFile, Path=IsChecked}" FontFamily="Consolas, Courier New" />
-                  <TextBlock VerticalAlignment="Center" Text=".Resources.resx" FontFamily="Consolas, Courier New" />
+                  <TextBlock VerticalAlignment="Center" Text=".Resources.resx" FontFamily="Consolas, Courier New" Margin="0,1,0,0" />
                   <TextBlock VerticalAlignment="Center" Text=" (leave blank for the standard global resource file)" />
+                </StackPanel>
+              </CheckBox>
+              <CheckBox Margin="20,0,0,8" Name="cbDontUseResourceAlias" IsEnabled="{Binding ElementName=cbUseGlobalResourceFile, Path=IsChecked}">
+                <StackPanel Orientation="Horizontal">
+                  <TextBlock VerticalAlignment="Center" Text="Don't use resource alias like  " />
+                  <TextBlock VerticalAlignment="Center" Text="using SRB_Strings_Res = ...;" FontFamily="Consolas, Courier New" Margin="0,1,0,0" />
+                  <TextBlock VerticalAlignment="Center" Text="  or  " />
+                  <TextBlock VerticalAlignment="Center" Text="using GlblRes = ...;" FontFamily="Consolas, Courier New" Margin="0,1,0,0" />
                 </StackPanel>
               </CheckBox>
             </StackPanel>
