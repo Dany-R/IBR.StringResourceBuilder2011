@@ -20,7 +20,8 @@ For debugging with VS2015 include this line into project.json (remove before deb
 1.5 Release 4 ======================================================================================
 Date        Version   Changes
 
-2017-06-30  1.5.4.22  Fixed: Missing standard resources for Help/About dialog of Visual Studio.
+2017-06-30  1.5.4.22  Fixed: Issue with expression bodied properties no longer being parsed.
+                      Fixed: Missing standard resources for Help/About dialog of Visual Studio.
                       New: Provide revision history as release notes in "Extensions and Updates".
 
 

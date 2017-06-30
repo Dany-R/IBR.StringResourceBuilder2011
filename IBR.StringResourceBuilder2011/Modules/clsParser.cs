@@ -195,8 +195,8 @@ namespace IBR.StringResourceBuilder2011.Modules
       }
       catch (Exception ex)
       {
-        //element.StartPoint not implemented in VS2017 15.2 (26430.6) for expression bodied property getters (VS broken?)
-        System.Diagnostics.Debug.Print("### Error: ParseForStrings(): element.StartPoint.Line > endLine? {0} - {1}", ex.GetType().Name, ex.Message);
+        //element.StartPoint not implemented in VS2017 15.2 (26430.6) for expression bodied property getters (before no getter element was available)
+        System.Diagnostics.Debug.Print("### Error: ParseForStrings({0}): element.StartPoint.Line > endLine? {1} - {2}", element.Kind, ex.GetType().Name, ex.Message);
         return;
       }
 
@@ -239,13 +239,18 @@ namespace IBR.StringResourceBuilder2011.Modules
       {
         CodeProperty prop = element as CodeProperty;
 
-        if (prop.Getter != null)
+        //CodeElement.StartPoint not implemented in VS2017 15.2 (26430.6) for expression bodied property getters
+        //because before the expression bodied properties had Getter and Setter == null
+        bool getterHasStartPoint = (prop.Getter != null) && (prop.Getter as CodeElement).HasStartPoint(),
+             setterHasStartPoint = (prop.Setter != null) && (prop.Setter as CodeElement).HasStartPoint();
+
+        if (getterHasStartPoint)
           ParseForStrings(prop.Getter as CodeElement, progressWorker, stringResources, settings, isCSharp, startLine, endLine);
 
-        if (prop.Setter != null)
+        if (setterHasStartPoint)
           ParseForStrings(prop.Setter as CodeElement, progressWorker, stringResources, settings, isCSharp, startLine, endLine);
 
-        if ((prop.Getter == null) && (prop.Setter == null))
+        if (!getterHasStartPoint && !setterHasStartPoint)
         {
           //expression bodied property
           int lineNo = ParseForStrings(element, stringResources, settings, isCSharp, startLine, endLine);
