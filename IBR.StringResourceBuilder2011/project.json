@@ -2,7 +2,7 @@
   "dependencies": {
     "EnvDTE100": "10.0.1",
     "Microsoft.VisualStudio.Shell.14.0": "14.3.25407",
-    "Microsoft.VSSDK.Vsixsigntool": "15.0.26201"
+    "Microsoft.VSSDK.Vsixsigntool": "15.0.26606"
   },
   "frameworks": {
     "net452": {}

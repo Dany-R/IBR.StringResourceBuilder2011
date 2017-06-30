@@ -17,6 +17,8 @@ using Microsoft.VisualStudio.Shell.Interop;
 
 namespace IBR.StringResourceBuilder2011
 {
+  //these attributes have been copied from base class (IBRStringResourceBuilder2011PackageBase) so that VS can use them
+  [InstalledProductRegistration("#110", "#112", "1.0", IconResourceID = 400)] // Info on this package for Help/About
   [Guid(GuidList.guidIBRStringResourceBuilder2011PkgString)]
   public class IBRStringResourceBuilder2011Package : IBRStringResourceBuilder2011PackageBase
   {
@@ -52,7 +54,7 @@ namespace IBR.StringResourceBuilder2011
       //SRB must be set to Transient=true in vspackage designer (no automatic window open on IDE start)
       if (m_Window == null)
       {
-        m_Window = this.FindToolWindow(typeof(SRBToolWindow), 0, false) as SRBToolWindow;
+        m_Window = FindToolWindow(typeof(SRBToolWindow), 0, false) as SRBToolWindow;
         if (m_Window != null)
           m_Control = m_Window.Content as SRBControl;
       } //if
