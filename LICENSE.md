@@ -1,4 +1,4 @@
-MIT License
+﻿MIT License (MIT)
 
 Copyright (c) Daniel Rühmer and Contributors
 
