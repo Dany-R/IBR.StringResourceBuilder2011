@@ -12,6 +12,22 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IBR.StringResourceBuilder2011", "IBR.StringResourceBuilder2011\IBR.StringResourceBuilder2011.csproj", "{75B14895-659E-4328-B132-85A1768D0BF2}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docs", "docs", "{524F8222-FC21-422E-8CCD-A357C24485A5}"
+	ProjectSection(SolutionItems) = preProject
+		docs\About.md = docs\About.md
+		docs\Documentation.md = docs\Documentation.md
+		docs\History.md = docs\History.md
+		docs\Prerequisites.md = docs\Prerequisites.md
+		docs\RevisionHistory.md = docs\RevisionHistory.md
+		docs\Settings.md = docs\Settings.md
+		docs\Settings_SRBSettingsPreview1.png = docs\Settings_SRBSettingsPreview1.png
+		docs\Settings_SRBSettingsPreview2.png = docs\Settings_SRBSettingsPreview2.png
+		docs\Settings_SRBSettingsPreview3.png = docs\Settings_SRBSettingsPreview3.png
+		docs\Usage.md = docs\Usage.md
+		docs\Usage_SRBMenu.png = docs\Usage_SRBMenu.png
+		docs\Usage_StringResourceBuilderPreview.png = docs\Usage_StringResourceBuilderPreview.png
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -28,5 +44,8 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{524F8222-FC21-422E-8CCD-A357C24485A5} = {2DF9C683-7540-4602-9573-75544B960AC4}
 	EndGlobalSection
 EndGlobal

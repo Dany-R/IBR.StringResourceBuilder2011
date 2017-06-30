@@ -1,5 +1,17 @@
 # Revision History
 
+### V1.6 R1 (22) [2017-06-30]
+
+* **Fixed:** Issue with expression bodied properties no longer being parsed.
+* **Fixed:** Missing standard resources for Help/About dialog of Visual Studio.
+* **New:** Provide revision history as release notes in "Extensions and Updates".
+* **New:** Option not to use the resource class using alias for global resources.  Thanks to **isaksavo**.
+
+### V1.5 R3 (21) [2017-05-21]
+
+* **Fixed:** Crash when parsing expression bodied properties due to a bug seen in VS2017 V15.2 (26430.6 +/-). But now, these property getters are ignored as long as the EnvDTE is not fixed to give proper start and end points.
+* **Changed:** NuGet to use project.json.
+
 ### V1.5 R2 (20) [2016-12-10]
 
 * **Changed:** Manifest changed to support only VS2015 and later from now on.

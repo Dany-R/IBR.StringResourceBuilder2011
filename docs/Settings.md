@@ -6,6 +6,7 @@ There are some settings for reducing the amount of string literals to be found:
 1. "**Ignore number strings**": string literals containing nothing but leading/trailing white space characters and numbers (also decimal numbers) will not be listed.
 1. "**Ignore verbatim strings**": verbatim string literals (preceded by `@` character, C#) will not be listed.
 1. "**Use global resource file `SRB_Strings.Resources.resx`**": all string resources will be stored into the resource file with the given name (no name for the standard global resource file) placed into the `Properties` directory (`My Project` for VB) of the project or if not available in the project root.
+1. "**Don't use resource aliaslike using SRB_Strings_Res = ...; or using GlbRes = ...;"
 1. "**Ignore these Strings**": string literals found in this list (**exact match**) will not be listed.
 1. "**Ignore Strings containing these strings**": string literals containing one of the the given sub-strings will not be listed.
 1. "**Ignore these Methods or Functions**": string literals within the given methods or functions (at the moment the names are class-independent, may be subject to change by preceding the class name) will not be listed.

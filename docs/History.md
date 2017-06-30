@@ -22,7 +22,7 @@ In January 2017 I reached the 3000th download and four additional reviews, now o
 
 It's pretty quiet regarding my private projects at the moment. :)
 
-I just moved from CodePlex to GitHub because it will be closed down for active contributions in 2017.
+I just moved from CodePlex to GitHub because it will be closed down for active contributions end of 2017.
 
 ## Obstacles
 
