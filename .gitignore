@@ -190,6 +190,7 @@ ClientBin/
 *.pvk
 *.cer
 *.lnk
+*.bak
 *.publishsettings
 node_modules/
 orleans.codegen.cs
@@ -247,10 +248,12 @@ ModelManifest.xml
 # FAKE - F# Make
 .fake/
 
-#project spacifig don't ignores
-!IBR.StringResourceBuilder2011/IBR.StringResourceBuilder2011.csproj.user
-
-# project specific ignores
+# IBR ignores
 **/IBR_CodeSigning*.bat
 SignCode.bat
 *.reg
+
+# project specific don't ignores
+!IBR.StringResourceBuilder2011/IBR.StringResourceBuilder2011.csproj.user
+
+# project specific ignores
