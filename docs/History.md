@@ -1,3 +1,5 @@
+[Home][home] / [Documentation](Documentation.md) / History
+
 # History
 
 ## The Beginning
@@ -33,3 +35,7 @@ There also is the lack of support of PNG images for buttons in VSPackage Builder
 I'm truly sad to say that there seems to be an end to the VSPackage Builder development, since the last update has been 2010-09-04 and there are about no answers to questions anymore.  I really like that extension though.
 
 As of V1.5 R2 (20) I removed VSPackage Builder code generation as it is no longer maintained.
+
+[Back: Prerequisites](Prerequisites.md)
+
+[home]: https://github.com/Dany-R/IBR.StringResourceBuilder2011

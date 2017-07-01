@@ -1,3 +1,5 @@
+[Home][home] / [Documentation](Documentation.md) / Prerequisites
+
 # Prerequisites
 
 Fellow developers or those who are just curious surly want to know what is needed to compile the presented project on their own machines.  This is what I used:
@@ -16,5 +18,6 @@ Fellow developers or those who are just curious surly want to know what is neede
 1. [VSPackage Builder](http://visualstudiogallery.msdn.microsoft.com/e9f40a57-3c9a-4d61-b3ec-1640c59549b3) which makes extension building more comfortable
 1. [Visual Studio 2010 SDK](http://www.microsoft.com/downloads/details.aspx?FamilyID=47305cf4-2bea-43c0-91cd-1b853602dcc5&displaylang=en) as prerequisite for VSPackage Builder
 
-[Next: History](History.md)
+[Back: Documentation](Documentation.md) / [Next: History](History.md)
 
+[home]: https://github.com/Dany-R/IBR.StringResourceBuilder2011

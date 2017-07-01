@@ -1,3 +1,5 @@
+[Home][home] / [Documentation](Documentation.md) / About
+
 # About
 The String Resource Builder is a tool to support easy localization of code.  It is created for Visual Studio 2010 to 2015 to extract string literals from source code (C# and VB.NET) and put them into resource files (ResX), replacing the string literal by its resource call (also an using alias will be created).
 
@@ -10,5 +12,6 @@ There is also an option to have a single project resource file for string resour
 * This tool is not tested with character sets other than used in English and German (meaning non-ASCII), thus one should first **try it with a backup copy** of a corresponding solution (for localization I recommend programming in English as neutral language because a professional translator it will be more easy).
 * When the tool window is open, editing the source will result in a refresh of the listed string literals (re-parsing of the code), which is automatically done after a pause of two seconds after the last change to the source code, which may lead to unexpected bahavior using the mouse to position the caret or copy&paste or move per drag&drop.  It is recommended to close the String Resource Builder tool window if not used or while coding (especially for big source files).
 
-[Next: Usage](Usage.md)
+[Back: Documentation](Documentation.md) / [Next: Usage](Usage.md)
 
+[home]: https://github.com/Dany-R/IBR.StringResourceBuilder2011

@@ -1,3 +1,5 @@
+[Home][home] / [Documentation](Documentation.md) / Revision History
+
 # Revision History
 
 ### V1.6 R1 (22) [2017-06-30]
@@ -90,3 +92,6 @@
 
 * **New:** Initial release for Visual Studio 2010
 
+[Back: Usage](Usage.md)
+
+[home]: https://github.com/Dany-R/IBR.StringResourceBuilder2011
