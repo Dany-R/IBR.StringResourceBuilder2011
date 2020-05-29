@@ -1,30 +1,30 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <PackageManifest Version="2.0.0" xmlns="http://schemas.microsoft.com/developer/vsx-schema/2011" xmlns:d="http://schemas.microsoft.com/developer/vsx-schema-design/2011">
-  <Metadata>
-    <Identity Id="IBR.StringResourceBuilder2011.Ingenieur-Büro Rühmer.731646bc-3737-4a6e-83ec-6c9a4e505153" Version="1.6.1.22" Language="en-US" Publisher="Ingenieur-Büro Rühmer" />
-    <DisplayName>IBR.StringResourceBuilder2011</DisplayName>
-    <Description xml:space="preserve">Build string resources from string literals within source code for localization.</Description>
-    <MoreInfo>http://visualstudiogallery.msdn.microsoft.com/74ecfb4f-6245-4942-a5b2-67aaacd49415</MoreInfo>
-    <License>License.rtf</License>
-    <ReleaseNotes>Resources\Release Notes.rtf</ReleaseNotes>
-    <Icon>Resources\Package.ico</Icon>
-    <PreviewImage>Resources\StringResourceBuilderPreview2.png</PreviewImage>
-    <Tags>resx, resources, localization, C#, VB.NET, Code Editor, VS2015, Visual Studio 2015, VS2017, Visual Studio 2017</Tags>
-  </Metadata>
-  <Installation>
-    <InstallationTarget Id="Microsoft.VisualStudio.Community" Version="[14.0,]" />
-    <!--<InstallationTarget Version="[14.0,]" Id="Microsoft.VisualStudio.MPF" />-->
-  </Installation>
-  <!--<Dependencies>
+    <Metadata>
+        <Identity Id="IBR.StringResourceBuilder2011.Ingenieur-Büro Rühmer.731646bc-3737-4a6e-83ec-6c9a4e505153" Version="1.6.2.23" Language="en-US" Publisher="Ingenieur-Büro Rühmer" />
+        <DisplayName>IBR.StringResourceBuilder2011</DisplayName>
+        <Description xml:space="preserve">Build string resources from string literals within source code for localization.</Description>
+        <MoreInfo>http://visualstudiogallery.msdn.microsoft.com/74ecfb4f-6245-4942-a5b2-67aaacd49415</MoreInfo>
+        <License>License.rtf</License>
+        <ReleaseNotes>Resources\Release Notes.rtf</ReleaseNotes>
+        <Icon>Resources\Package.ico</Icon>
+        <PreviewImage>Resources\StringResourceBuilderPreview2.png</PreviewImage>
+        <Tags>resx, resources, localization, C#, VB.NET, Code Editor, VS2015, Visual Studio 2015, VS2017, Visual Studio 2017, VS2019, Visual Studio 2019</Tags>
+    </Metadata>
+    <Installation>
+        <InstallationTarget Id="Microsoft.VisualStudio.Community" Version="[14.0,]" />
+        <!--<InstallationTarget Version="[14.0,]" Id="Microsoft.VisualStudio.MPF" />-->
+    </Installation>
+    <!--<Dependencies>
     <Dependency Id="Microsoft.Framework.NDP" DisplayName="Microsoft .NET Framework" d:Source="Manual" Version="[4.5,]" />
     <Dependency Id="Microsoft.VisualStudio.MPF.14.0" DisplayName="Visual Studio MPF 14.0" d:Source="Installed" Version="[14.0]" />
   </Dependencies>-->
-  <Prerequisites>
-    <Prerequisite Id="Microsoft.VisualStudio.Component.CoreEditor" Version="[14.0,]" DisplayName="Visual Studio core editor" />
-    <Prerequisite Id="Microsoft.VisualStudio.Component.Roslyn.LanguageServices" Version="[14.0,]" DisplayName="C# and Visual Basic" />
-  </Prerequisites>
-  <Assets>
-    <Asset Type="Microsoft.VisualStudio.MefComponent" d:Source="Project" d:ProjectName="%CurrentProject%" Path="|%CurrentProject%|" />
-    <Asset Type="Microsoft.VisualStudio.VsPackage" d:Source="Project" d:ProjectName="%CurrentProject%" Path="|%CurrentProject%;PkgdefProjectOutputGroup|" />
-  </Assets>
+    <Prerequisites>
+        <Prerequisite Id="Microsoft.VisualStudio.Component.CoreEditor" Version="[14.0,]" DisplayName="Visual Studio core editor" />
+        <Prerequisite Id="Microsoft.VisualStudio.Component.Roslyn.LanguageServices" Version="[14.0,]" DisplayName="C# and Visual Basic" />
+    </Prerequisites>
+    <Assets>
+        <Asset Type="Microsoft.VisualStudio.MefComponent" d:Source="Project" d:ProjectName="%CurrentProject%" Path="|%CurrentProject%|" />
+        <Asset Type="Microsoft.VisualStudio.VsPackage" d:Source="Project" d:ProjectName="%CurrentProject%" Path="|%CurrentProject%;PkgdefProjectOutputGroup|" />
+    </Assets>
 </PackageManifest>

@@ -17,6 +17,13 @@ For debugging with VS2015 include this line into project.json (remove before deb
     "Microsoft.VisualStudio.Sdk.BuildTasks.14.0": "14.0.215",
 
 
+1.6 Release 2 ======================================================================================
+Date        Version   Changes
+
+2020-05-29  1.6.2.23  New: Using Visual Studio 2019.
+                      New: extension.vsixmanifest updated.
+
+
 1.6 Release 1 ======================================================================================
 Date        Version   Changes
 
