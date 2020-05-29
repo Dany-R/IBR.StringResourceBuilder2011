@@ -10,6 +10,13 @@ from source code into resource files (ResX).
 The binary of this VS extension is also published at the [Visual Studio Marketplace][vsgallery]
 for direct access from VS.
 
+## Contribute
+
+You are welcome to [contribute](.github/CONTRIBUTE.md) to this project.
+
+Please note that this project is released with a [Contributor Code of Conduct](.github/CODE_OF_CONDUCT.md).
+By participating in this project you agree to abide by its terms.
+
 ## License
 
 This projects stands under the [MIT License](LICENSE.md).

@@ -378,8 +378,8 @@ namespace IBR.StringResourceBuilder2011.Modules
             if (txtLine.Contains("\""))
               ParseForStrings(txtLine, editLine, editColumn, stringResources, settings, isCSharp, ref isComment);
 #else
-            if (line.Contains("\""))
-              ParseForStrings(line, editLine, editColumn, stringResources, settings, ref isComment, ref isIgnoreMethodArguments);
+            if (txtLine.Contains("\""))
+              ParseForStrings(txtLine, editLine, editColumn, stringResources, settings, ref isComment, ref isIgnoreMethodArguments);
 #endif
           } //if
 
