@@ -35,12 +35,12 @@ namespace IBR.StringResourceBuilder2011.Modules
 
     #region Fields
 
-    private Window m_Window;
-    private List<StringResource> m_StringResources;
-    private Settings m_Settings;
-    private Action<int> m_DoProgress;
-    private Action<bool> m_DoCompleted;
-    private bool m_IsCSharp;
+    private readonly Window m_Window;
+    private readonly List<StringResource> m_StringResources;
+    private readonly Settings m_Settings;
+    private readonly Action<int> m_DoProgress;
+    private readonly Action<bool> m_DoCompleted;
+    private readonly bool m_IsCSharp;
 
     #endregion //Fields ----------------------------------------------------------------------------
 
@@ -759,7 +759,7 @@ namespace IBR.StringResourceBuilder2011.Modules
     private static string HandleComment(string txtPart,
                                         ref bool isComment)
     {
-      int pos = -1;
+      int pos;
 
       if (isComment)
       {

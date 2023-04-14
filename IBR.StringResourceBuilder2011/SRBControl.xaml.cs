@@ -39,18 +39,19 @@ namespace IBR.StringResourceBuilder2011
 
       m_Dte2 = Microsoft.VisualStudio.Shell.Package.GetGlobalService(typeof(DTE)) as DTE2;
 
-      m_StringResourceBuilder = new StringResourceBuilder(m_Dte2);
-
-      m_StringResourceBuilder.InitProgress        = InitProgress;
-      m_StringResourceBuilder.HideProgress        = HideProgress;
-      m_StringResourceBuilder.SetProgress         = SetProgress;
-      m_StringResourceBuilder.ClearGrid           = ClearGrid;
-      m_StringResourceBuilder.SetGridItemsSource  = SetGridItemsSource;
-      m_StringResourceBuilder.RefreshGrid         = RefreshGrid;
-      m_StringResourceBuilder.SelectCell          = SelectCell;
-      m_StringResourceBuilder.GetSelectedItem     = GetSelectedItem;
-      m_StringResourceBuilder.GetSelectedColIndex = GetSelectedColIndex;
-      m_StringResourceBuilder.GetSelectedRowIndex = GetSelectedRowIndex;
+      m_StringResourceBuilder = new StringResourceBuilder(m_Dte2)
+      {
+        InitProgress        = InitProgress,
+        HideProgress        = HideProgress,
+        SetProgress         = SetProgress,
+        ClearGrid           = ClearGrid,
+        SetGridItemsSource  = SetGridItemsSource,
+        RefreshGrid         = RefreshGrid,
+        SelectCell          = SelectCell,
+        GetSelectedItem     = GetSelectedItem,
+        GetSelectedColIndex = GetSelectedColIndex,
+        GetSelectedRowIndex = GetSelectedRowIndex
+      };
     }
 
     #endregion //Constructor -----------------------------------------------------------------------
@@ -60,12 +61,12 @@ namespace IBR.StringResourceBuilder2011
 
     #region Fields
 
-    private DTE2 m_Dte2;
+    private readonly DTE2 m_Dte2;
 
     private bool m_IsVisible;
     //private bool m_IsVisibleChanged;
 
-    private StringResourceBuilder m_StringResourceBuilder;
+    private readonly StringResourceBuilder m_StringResourceBuilder;
 
     private TextEditorEvents m_TextEditorEvents;
     //private EnvDTE80.TextDocumentKeyPressEvents m_TextDocumentKeyPressEvents;
@@ -246,8 +247,7 @@ namespace IBR.StringResourceBuilder2011
 
       if ((window != null) && (window.Document != null) && (window.Caption.EndsWith(".cs") || window.Caption.EndsWith(".vb")))
       {
-        TextDocument txtDoc = window.Document.Object("TextDocument") as TextDocument;
-        if (txtDoc != null)
+        if (window.Document.Object("TextDocument") is TextDocument txtDoc)
         {
           EnvDTE80.Events2 events = (EnvDTE80.Events2)m_Dte2.Events;
 
@@ -261,7 +261,7 @@ namespace IBR.StringResourceBuilder2011
 
           if (m_FocusedTextDocumentWindowHash != window.GetHashCode())
           {
-            m_FocusedTextDocumentWindowHash                   = window.GetHashCode();
+            m_FocusedTextDocumentWindowHash = window.GetHashCode();
             m_StringResourceBuilder.FocusedTextDocumentWindow = window;
             this.Dispatcher.BeginInvoke(new Action(m_StringResourceBuilder.DoBrowse));
           } //if
@@ -541,11 +541,7 @@ namespace IBR.StringResourceBuilder2011
 
     internal bool GetFirstEnabled()
     {
-      bool isEmpty,
-           isFirst,
-           isLast;
-
-      GetGridSelectionStates(out isEmpty, out isFirst, out isLast);
+      GetGridSelectionStates(out bool isEmpty, out bool isFirst, out bool isLast);
 
       return (!isFirst && !isEmpty);
     }
@@ -560,11 +556,7 @@ namespace IBR.StringResourceBuilder2011
 
     internal bool GetPreviousEnabled()
     {
-      bool isEmpty,
-           isFirst,
-           isLast;
-
-      GetGridSelectionStates(out isEmpty, out isFirst, out isLast);
+      GetGridSelectionStates(out bool isEmpty, out bool isFirst, out bool isLast);
 
       return (!isFirst && !isEmpty);
     }
@@ -579,11 +571,7 @@ namespace IBR.StringResourceBuilder2011
 
     internal bool GetNextEnabled()
     {
-      bool isEmpty,
-           isFirst,
-           isLast;
-
-      GetGridSelectionStates(out isEmpty, out isFirst, out isLast);
+      GetGridSelectionStates(out bool isEmpty, out bool isFirst, out bool isLast);
 
       return (!isLast && !isEmpty);
     }
@@ -598,11 +586,7 @@ namespace IBR.StringResourceBuilder2011
 
     internal bool GetLastEnabled()
     {
-      bool isEmpty,
-           isFirst,
-           isLast;
-
-      GetGridSelectionStates(out isEmpty, out isFirst, out isLast);
+      GetGridSelectionStates(out bool isEmpty, out bool isFirst, out bool isLast);
 
       return (!isLast && !isEmpty);
     }
@@ -617,11 +601,7 @@ namespace IBR.StringResourceBuilder2011
 
     internal bool GetMakeEnabled()
     {
-      bool isEmpty,
-           isFirst,
-           isLast;
-
-      GetGridSelectionStates(out isEmpty, out isFirst, out isLast);
+      GetGridSelectionStates(out bool isEmpty, out bool isFirst, out bool isLast);
 
       return (!isEmpty);
     }

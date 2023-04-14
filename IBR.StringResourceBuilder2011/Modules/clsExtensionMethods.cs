@@ -9,7 +9,7 @@ namespace IBR.StringResourceBuilder2011.Modules
   {
     #region UIElement.Refresh
 
-    private static Action EmptyDelegate = delegate() { };
+    private static readonly Action EmptyDelegate = delegate() { };
 
     public static void Refresh(this UIElement uiElement)
     {

@@ -1,11 +1,12 @@
 ﻿{
   "dependencies": {
-    "EnvDTE100": "10.0.1",
-    "Microsoft.VisualStudio.Shell.14.0": "14.3.25407",
-    "Microsoft.VSSDK.Vsixsigntool": "15.0.26606"
+    "Microsoft.VisualStudio.SDK": "17.5.33428.388",
+    "Microsoft.VisualStudio.Shell.15.0": "17.5.33428.388",
+    "Microsoft.VSSDK.BuildTools": "17.5.4072",
+    "Microsoft.VSSDK.VsixSignTool": "16.2.29116.78"
   },
   "frameworks": {
-    "net452": {}
+    "net48": {}
   },
   "runtimes": {
     "win": {}

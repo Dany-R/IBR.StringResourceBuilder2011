@@ -4,8 +4,13 @@
 
 Fellow developers or those who are just curious surly want to know what is needed to compile the presented project on their own machines.  This is what I used:
 
+1. Visual Studio 2022 Professional or better
+1. For the project to build a _IBR_CodeSigning.pfx_ certificate is needed within the project directory (not pushed to GitHub).
+
+### Before V2.0 R1 (23) [2023-04-14]
+
 1. Visual Studio 2017 Enterprise (Professional will suffice)
-1. For the project to build a DanielRuehmer_CodeSign.pfx certificate is needed within the project directory (not pushed to GitHub).
+1. For the project to build _DanielRuehmer_CodeSign.pfx_ and _IBR_CodeSigning.pfx_ certificates are needed within the project directory (not pushed to GitHub).
 
 ### Before V1.5 R1 (19) [2016-02-27]
 

@@ -3,6 +3,8 @@ using System.ComponentModel.Design;
 using System.Diagnostics;
 using System.Globalization;
 using System.Runtime.InteropServices;
+
+using Microsoft;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 
@@ -41,7 +43,7 @@ namespace IBR.StringResourceBuilder2011
     /// </summary>
     public IBRStringResourceBuilder2011PackageBase()
     {
-      Trace.WriteLine($"Entering constructor for: {this.ToString()}");
+      Trace.WriteLine($"Entering constructor for: {this}");
     }
 
     /////////////////////////////////////////////////////////////////////////////
@@ -55,12 +57,14 @@ namespace IBR.StringResourceBuilder2011
     /// </summary>
     protected override void Initialize()
     {
-      Trace.WriteLine ($"Entering Initialize() of: {this.ToString()}");
+      Trace.WriteLine ($"Entering Initialize() of: {this}");
+
+      ThreadHelper.ThrowIfNotOnUIThread();
+
       base.Initialize();
 
       // Add our command handlers for menu (commands must exist in the .vsct file)
-      OleMenuCommandService mcs = GetService(typeof(IMenuCommandService)) as OleMenuCommandService;
-      if ( null != mcs )
+      if (GetService(typeof(IMenuCommandService)) is OleMenuCommandService mcs)
       {
         CommandID commandId;
         OleMenuCommand menuItem;
@@ -130,6 +134,8 @@ namespace IBR.StringResourceBuilder2011
 
     protected virtual void RescanExecuteHandler(object sender, EventArgs e)
     {
+      ThreadHelper.ThrowIfNotOnUIThread();
+
       ShowMessage("Rescan clicked!");
     }
 
@@ -147,6 +153,8 @@ namespace IBR.StringResourceBuilder2011
 
     protected virtual void FirstExecuteHandler(object sender, EventArgs e)
     {
+      ThreadHelper.ThrowIfNotOnUIThread();
+
       ShowMessage("First clicked!");
     }
 
@@ -252,6 +260,8 @@ namespace IBR.StringResourceBuilder2011
     /// </summary>
     private void ShowToolWindowSRB(object sender, EventArgs e)
     {
+      ThreadHelper.ThrowIfNotOnUIThread();
+
       // Get the instance number 0 of this tool window. This window is single instance so this instance
       // is actually the only one.
       // The last flag is set to true so that if the tool window does not exists it will be created.
@@ -270,10 +280,12 @@ namespace IBR.StringResourceBuilder2011
     /// </summary>
     protected void ShowMessage(string message)
     {
+      ThreadHelper.ThrowIfNotOnUIThread();
+
       // Show a Message Box to prove we were here
       IVsUIShell uiShell = (IVsUIShell)GetService(typeof(SVsUIShell));
+      Assumes.Present(uiShell);
       Guid clsid = Guid.Empty;
-      int result;
       Microsoft.VisualStudio.ErrorHandler.ThrowOnFailure(uiShell.ShowMessageBox(
              0,
              ref clsid,
@@ -285,7 +297,7 @@ namespace IBR.StringResourceBuilder2011
              OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_FIRST,
              OLEMSGICON.OLEMSGICON_INFO,
              0,    // false
-             out result));
+             out _));
     }
   } //class
 } //namespace

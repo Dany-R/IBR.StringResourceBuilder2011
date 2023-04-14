@@ -78,9 +78,7 @@ namespace IBR.StringResourceBuilder2011
     {
       //base.RescanExecuteHandler(sender, e);
 
-      OleMenuCommand command = sender as OleMenuCommand;
-
-      if (command == null)
+      if (!(sender is OleMenuCommand /*command*/))
         return;
 
       if (m_Control == null)
@@ -93,9 +91,7 @@ namespace IBR.StringResourceBuilder2011
     {
       //base.RescanChangeHandler(sender, e);
 
-      OleMenuCommand command = sender as OleMenuCommand;
-
-      if (command == null)
+      if (!(sender is OleMenuCommand /*command*/))
         return;
     }
 
@@ -105,15 +101,13 @@ namespace IBR.StringResourceBuilder2011
 
       //base.RescanQueryStatusHandler(sender, e);
 
-      OleMenuCommand command = sender as OleMenuCommand;
-
-      if (command == null)
+      if (!(sender is OleMenuCommand command))
         return;
 
       if ((m_Control != null) && (m_Control.RescanButton == null))
         m_Control.RescanButton = command;
 
-      command.Enabled = (m_Control == null) ? false : m_Control.GetRescanEnabled();
+      command.Enabled = (m_Control != null) && m_Control.GetRescanEnabled();
     }
 
     #endregion
@@ -124,9 +118,7 @@ namespace IBR.StringResourceBuilder2011
     {
       //base.FirstExecuteHandler(sender, e);
 
-      OleMenuCommand command = sender as OleMenuCommand;
-
-      if (command == null)
+      if (!(sender is OleMenuCommand /*command*/))
         return;
 
       if (m_Control == null)
@@ -139,9 +131,7 @@ namespace IBR.StringResourceBuilder2011
     {
       //base.FirstChangeHandler(sender, e);
 
-      OleMenuCommand command = sender as OleMenuCommand;
-
-      if (command == null)
+      if (!(sender is OleMenuCommand /*command*/))
         return;
     }
 
@@ -151,15 +141,13 @@ namespace IBR.StringResourceBuilder2011
 
       //base.FirstQueryStatusHandler(sender, e);
 
-      OleMenuCommand command = sender as OleMenuCommand;
-
-      if (command == null)
+      if (!(sender is OleMenuCommand command))
         return;
 
       if ((m_Control != null) && (m_Control.FirstButton == null))
         m_Control.FirstButton = command;
 
-      command.Enabled = (m_Control == null) ? false : m_Control.GetFirstEnabled();
+      command.Enabled = (m_Control != null) && m_Control.GetFirstEnabled();
     }
 
     #endregion
@@ -168,11 +156,9 @@ namespace IBR.StringResourceBuilder2011
 
     protected override void PreviousExecuteHandler(object sender, EventArgs e)
     {
-      OleMenuCommand command = sender as OleMenuCommand;
-
       //base.PreviousExecuteHandler(sender, e);
 
-      if (command == null)
+      if (!(sender is OleMenuCommand /*command*/))
         return;
 
       if (m_Control == null)
@@ -185,9 +171,7 @@ namespace IBR.StringResourceBuilder2011
     {
       //base.PreviousChangeHandler(sender, e);
 
-      OleMenuCommand command = sender as OleMenuCommand;
-
-      if (command == null)
+      if (!(sender is OleMenuCommand /*command*/))
         return;
     }
 
@@ -197,15 +181,13 @@ namespace IBR.StringResourceBuilder2011
 
       //base.PreviousQueryStatusHandler(sender, e);
 
-      OleMenuCommand command = sender as OleMenuCommand;
-
-      if (command == null)
+      if (!(sender is OleMenuCommand command))
         return;
 
       if ((m_Control != null) && (m_Control.PreviousButton == null))
         m_Control.PreviousButton = command;
 
-      command.Enabled = (m_Control == null) ? false : m_Control.GetPreviousEnabled();
+      command.Enabled = (m_Control != null) && m_Control.GetPreviousEnabled();
     }
 
     #endregion
@@ -214,11 +196,9 @@ namespace IBR.StringResourceBuilder2011
 
     protected override void NextExecuteHandler(object sender, EventArgs e)
     {
-      OleMenuCommand command = sender as OleMenuCommand;
-
       //base.NextExecuteHandler(sender, e);
 
-      if (command == null)
+      if (!(sender is OleMenuCommand /*command*/))
         return;
 
       if (m_Control == null)
@@ -231,9 +211,8 @@ namespace IBR.StringResourceBuilder2011
     {
       //base.NextChangeHandler(sender, e);
 
-      OleMenuCommand command = sender as OleMenuCommand;
 
-      if (command == null)
+      if (!(sender is OleMenuCommand /*command*/))
         return;
     }
 
@@ -243,15 +222,14 @@ namespace IBR.StringResourceBuilder2011
 
       //base.NextQueryStatusHandler(sender, e);
 
-      OleMenuCommand command = sender as OleMenuCommand;
 
-      if (command == null)
+      if (!(sender is OleMenuCommand command))
         return;
 
       if ((m_Control != null) && (m_Control.NextButton == null))
         m_Control.NextButton = command;
 
-      command.Enabled = (m_Control == null) ? false : m_Control.GetNextEnabled();
+      command.Enabled = (m_Control != null) && m_Control.GetNextEnabled();
     }
 
     #endregion
@@ -262,9 +240,8 @@ namespace IBR.StringResourceBuilder2011
     {
       //base.LastExecuteHandler(sender, e);
 
-      OleMenuCommand command = sender as OleMenuCommand;
 
-      if (command == null)
+      if (!(sender is OleMenuCommand /*command*/))
         return;
 
       if (m_Control == null)
@@ -277,9 +254,8 @@ namespace IBR.StringResourceBuilder2011
     {
       //base.LastChangeHandler(sender, e);
 
-      OleMenuCommand command = sender as OleMenuCommand;
 
-      if (command == null)
+      if (!(sender is OleMenuCommand /*command*/))
         return;
     }
 
@@ -289,15 +265,14 @@ namespace IBR.StringResourceBuilder2011
 
       //base.LastQueryStatusHandler(sender, e);
 
-      OleMenuCommand command = sender as OleMenuCommand;
 
-      if (command == null)
+      if (!(sender is OleMenuCommand command))
         return;
 
       if ((m_Control != null) && (m_Control.LastButton == null))
         m_Control.LastButton = command;
 
-      command.Enabled = (m_Control == null) ? false : m_Control.GetLastEnabled();
+      command.Enabled = (m_Control != null) && m_Control.GetLastEnabled();
     }
 
     #endregion
@@ -308,9 +283,8 @@ namespace IBR.StringResourceBuilder2011
     {
       //base.MakeExecuteHandler(sender, e);
 
-      OleMenuCommand command = sender as OleMenuCommand;
 
-      if (command == null)
+      if (!(sender is OleMenuCommand /*command*/))
         return;
 
       if (m_Control == null)
@@ -323,9 +297,8 @@ namespace IBR.StringResourceBuilder2011
     {
       //base.MakeChangeHandler(sender, e);
 
-      OleMenuCommand command = sender as OleMenuCommand;
 
-      if (command == null)
+      if (!(sender is OleMenuCommand /*command*/))
         return;
     }
 
@@ -335,15 +308,14 @@ namespace IBR.StringResourceBuilder2011
 
       //base.MakeQueryStatusHandler(sender, e);
 
-      OleMenuCommand command = sender as OleMenuCommand;
 
-      if (command == null)
+      if (!(sender is OleMenuCommand command))
         return;
 
       if ((m_Control != null) && (m_Control.MakeButton == null))
         m_Control.MakeButton = command;
 
-      command.Enabled = (m_Control == null) ? false : m_Control.GetMakeEnabled();
+      command.Enabled = (m_Control != null) && m_Control.GetMakeEnabled();
     }
 
     #endregion
@@ -354,9 +326,8 @@ namespace IBR.StringResourceBuilder2011
     {
       //base.SettingsExecuteHandler(sender, e);
 
-      OleMenuCommand command = sender as OleMenuCommand;
 
-      if (command == null)
+      if (!(sender is OleMenuCommand /*command*/))
         return;
 
       if (m_Control == null)
@@ -369,9 +340,8 @@ namespace IBR.StringResourceBuilder2011
     {
       //base.SettingsChangeHandler(sender, e);
 
-      OleMenuCommand command = sender as OleMenuCommand;
 
-      if (command == null)
+      if (!(sender is OleMenuCommand /*command*/))
         return;
     }
 
@@ -381,15 +351,14 @@ namespace IBR.StringResourceBuilder2011
 
       //base.SettingsQueryStatusHandler(sender, e);
 
-      OleMenuCommand command = sender as OleMenuCommand;
 
-      if (command == null)
+      if (!(sender is OleMenuCommand command))
         return;
 
       if ((m_Control != null) && (m_Control.SettingsButton == null))
         m_Control.SettingsButton = command;
 
-      command.Enabled = (m_Control == null) ? false : m_Control.GetSettingsEnabled();
+      command.Enabled = (m_Control != null) && m_Control.GetSettingsEnabled();
     }
 
     #endregion

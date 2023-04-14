@@ -2,6 +2,14 @@
 
 # Revision History
 
+### V2.0 R1 (23) [2023-04-14]
+
+* **Changed:** NuGet Packages for VS2022.
+* **Changed:** Manifest changed to support only VS2022 and later from now on.
+* **Changed:** TargetFrameworkVersion set to v4.8.
+* **New:** Using Visual Studio 2022.
+* **New:** Extension updated for Visual Studio 2022 (V17.x).
+
 ### V1.6 R1 (22) [2017-06-30]
 
 * **Fixed:** Issue with expression bodied properties no longer being parsed.
@@ -12,7 +20,7 @@
 ### V1.5 R3 (21) [2017-05-21]
 
 * **Fixed:** Crash when parsing expression bodied properties due to a bug seen in VS2017 V15.2 (26430.6 +/-). But now, these property getters are ignored as long as the EnvDTE is not fixed to give proper start and end points.
-* **Changed:** NuGet to use project.json.
+* **Changed:** NuGet to use project.json (PackageReference).
 
 ### V1.5 R2 (20) [2016-12-10]
 

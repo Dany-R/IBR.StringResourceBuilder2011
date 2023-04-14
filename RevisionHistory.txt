@@ -13,8 +13,14 @@
 ****************************************************************************************************
 
 
-For debugging with VS2015 include this line into project.json (remove before debugging with VS2017):
-    "Microsoft.VisualStudio.Sdk.BuildTasks.14.0": "14.0.215",
+2.0 Release 1 ======================================================================================
+Date        Version   Changes
+
+2023-04-14  2.0.1.23  Changed: NuGet Packages for VS2022.
+                      Changed: Manifest changed to support only VS2022 and later from now on.
+                      Changed: TargetFrameworkVersion set to v4.8.
+                      New: Using Visual Studio 2022.
+                      New: Extension updated for Visual Studio 2022 (V17.x).
 
 
 1.6 Release 2 ======================================================================================
@@ -40,7 +46,7 @@ Date        Version   Changes
                              VS2017 V15.2 (26430.6, maybe earlier) as stated here. But now, these
                              property getters are ignored as long as the EnvDTE is not fixed to give
                              proper start and end points.
-                      Changed: NuGet to use project.json.
+                      Changed: NuGet to use project.json (PackageReference).
 
 
 1.5 Release 2 ======================================================================================
