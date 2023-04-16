@@ -16,12 +16,12 @@
 
 ### Copyright Notices
 
-* Microsoft Visual Studio 2022 is Copyright (c) 2022 Microsoft Corporation, All Rights Reserved.
-* Microsoft Visual Studio 2019 is Copyright (c) 2019 Microsoft Corporation, All Rights Reserved.
-* Microsoft Visual Studio 2017 is Copyright (c) 2017 Microsoft Corporation, All Rights Reserved.
-* Microsoft Visual Studio 2015 is Copyright (c) 2015 Microsoft Corporation, All Rights Reserved.
-* Visual Studio 2010 SDK is Copyright (c) 2010 Microsoft Corporation, All Rights Reserved.
-* VSPackage Builder is Copyright (c) 2010 Microsoft Corporation, All Rights Reserved.
+* Microsoft Visual Studio 2022 is Copyright (c) Microsoft Corporation, All Rights Reserved.
+* Microsoft Visual Studio 2019 is Copyright (c) Microsoft Corporation, All Rights Reserved.
+* Microsoft Visual Studio 2017 is Copyright (c) Microsoft Corporation, All Rights Reserved.
+* Microsoft Visual Studio 2015 is Copyright (c) Microsoft Corporation, All Rights Reserved.
+* Visual Studio 2010 SDK is Copyright (c) Microsoft Corporation, All Rights Reserved.
+* VSPackage Builder is Copyright (c) Microsoft Corporation, All Rights Reserved.
 * Class GreyableImage.ImageGrayer Copyright (c) 2008 Alexey Potapov, All Rights Reserved.
 * All other code is Copyright (c) 2006-2023, Daniel Ruehmer, All Rights Reserved.
 
