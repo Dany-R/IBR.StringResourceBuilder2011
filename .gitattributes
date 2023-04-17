@@ -1,0 +1,5 @@
+* text=auto
+*.[tT][xX][tT] text
+*.[rR][tT][fF] text
+#*.vcproj       text eol=crlf
+#*.[sS][hH]     text eol=lf
